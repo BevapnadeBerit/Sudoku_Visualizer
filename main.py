@@ -1,20 +1,40 @@
-# Example file showing a basic pygame "game loop"
 import pygame
+
+# base settings
+WIDTH = 1280
+HEIGHT = 720
+FPS = 60
 
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((1280, 720))
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
+# custom events
+FULLSCREEN = pygame.USEREVENT + 1
+
 while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+
+        # Checks for keys
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
+            if event.key == pygame.K_f:
+                pygame.event.post(pygame.event.Event(FULLSCREEN))
+
+        # Checks for quit
+        elif event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
+        # Checks for fullscreen event
+        elif event.type == FULLSCREEN:
+            if screen.get_flags() & pygame.FULLSCREEN:
+                pygame.display.set_mode((WIDTH, HEIGHT))
+            else:
+                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # CGPT
+
     screen.fill("white")
 
     # RENDER YOUR GAME HERE
@@ -22,6 +42,6 @@ while running:
     # flip() the display to put your work on screen
     pygame.display.flip()
 
-    clock.tick(60)  # limits FPS to 60
+    clock.tick(FPS)  # limits FPS to 60
 
 pygame.quit()
