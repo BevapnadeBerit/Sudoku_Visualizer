@@ -1,4 +1,5 @@
 import pygame
+from grid import *
 
 # base settings
 WIDTH = 1280
@@ -10,6 +11,13 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
+
+# sprite groups
+grid_sprites = pygame.sprite.Group()
+
+# grid
+grid_pos = (int(WIDTH/2), int(HEIGHT/2))
+grid = Grid(grid_pos, 3, 3, 3, 3, grid_sprites)
 
 # custom events
 FULLSCREEN = pygame.USEREVENT + 1
@@ -38,6 +46,7 @@ while running:
     screen.fill("white")
 
     # RENDER YOUR GAME HERE
+    grid_sprites.draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
