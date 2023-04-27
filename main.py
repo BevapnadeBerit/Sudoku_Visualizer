@@ -5,6 +5,7 @@ from grid import *
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
+MANUAL = False
 
 # pygame setup
 pygame.init()
@@ -24,9 +25,13 @@ FULLSCREEN = pygame.USEREVENT + 1
 
 while running:
     for event in pygame.event.get():
-
-        # Checks for keys
+        # Checks for Input
         if event.type == pygame.KEYDOWN:
+            # Check these keys only if MANUAL
+            if MANUAL:
+
+
+            # Check these keys always
             if event.key == pygame.K_SPACE:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if event.key == pygame.K_f:
