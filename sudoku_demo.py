@@ -34,6 +34,7 @@ def main():
     else:
         print(f"Skipped inserting invalid number 1 at row 0, column 3.")
     sudoku.remove_number(0, 0)
+    print(f"Removed number 1 at row 0, column 0.")
     if sudoku.insert_number(0, 3, 1):
         print(f"Inserted number 1 at row 0, column 3.")
     else:
