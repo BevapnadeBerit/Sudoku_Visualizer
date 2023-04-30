@@ -29,6 +29,15 @@ def main():
             num = (row * 3 + col) % 9 + 1
             sudoku.insert_number(row, col, num)
             print(f"Inserted number {num} at row {row}, column {col}.")
+    if sudoku.insert_number(0, 3, 1):
+        print(f"Inserted number 1 at row 0, column 3.")
+    else:
+        print(f"Skipped inserting invalid number 1 at row 0, column 3.")
+    sudoku.remove_number(0, 0)
+    if sudoku.insert_number(0, 3, 1):
+        print(f"Inserted number 1 at row 0, column 3.")
+    else:
+        print(f"Skipped inserting invalid number 1 at row 0, column 3.")
 
 
     while running:
