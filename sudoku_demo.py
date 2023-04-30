@@ -1,4 +1,5 @@
 # Simple demo of the Sudoku class for manual testing.
+# Partially generated with ChatGPT.
 
 import pygame
 from grid import Grid, Square
@@ -23,14 +24,12 @@ def main():
     sudoku = Sudoku(grid, grid_pos)
 
     # Test the insert_number method
-    row = 1
-    col = 1
-    num = 5
+    for row in range(3):
+        for col in range(3):
+            num = (row * 3 + col) % 9 + 1
+            sudoku.insert_number(row, col, num)
+            print(f"Inserted number {num} at row {row}, column {col}.")
 
-    box = grid.boxes[row // 3][col // 3]
-    square = box.squares[row % 3][col % 3]
-    sudoku.insert_number(square, num)
-    print(f"Inserted number {num} at row {row}, column {col}.")
 
     while running:
         for event in pygame.event.get():
