@@ -51,6 +51,8 @@ class Box(pygame.sprite.Sprite):
         for x in range(width):
             current_array = []
             for y in range(height):
+                row = x + (box_pos[0] - GRID_OUTLINE - SQUARE_SIZE) // BOX_SIZE * 3
+                col = y + (box_pos[1] - GRID_OUTLINE - SQUARE_SIZE) // BOX_SIZE * 3
                 square_pos = (box_pos[0] + (x - 1) * SQUARE_SIZE, box_pos[1] + (y - 1) * SQUARE_SIZE)
                 current_array.append(Square(square_pos, group))
             self.squares.append(current_array)
@@ -60,7 +62,7 @@ class Square(pygame.sprite.Sprite):
     """
     A square with a value which is represented by an instance of the Number class if in the range of 0-9.
     """
-    def __init__(self, square_pos: tuple[int, int], group: pygame.sprite.Group, value=-1):
+    def __init__(self, square_pos: tuple[int, int], group: pygame.sprite.Group, value=-1, row=-1, col=-1):
         super().__init__(group)
 
         file_path = os.path.join("images", "square.png")
@@ -68,6 +70,8 @@ class Square(pygame.sprite.Sprite):
         image = pygame.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
 
         self.pos = square_pos
+        self.row = row
+        self.col = col
         self.image = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
         self.image.blit(image, (0, 0))
         self.rect = self.image.get_rect()
