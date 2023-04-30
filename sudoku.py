@@ -1,5 +1,3 @@
-import os
-import pygame
 from grid import Grid, Square, Box
 
 
@@ -20,7 +18,6 @@ class Sudoku:
         square = self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
         group = square.groups()[0]
         square.set_value(-1, group)
-        print(square.number)
 
     def is_number_valid(self, row: int, col: int, num: int) -> bool:
         # Check if the number is already in the same row or column

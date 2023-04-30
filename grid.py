@@ -85,7 +85,10 @@ class Square(pygame.sprite.Sprite):
         self.value = value
         if self.number is not None:
             self.number.kill()
-        self.number = Number(self.pos, value, group)
+        if self.value == -1:
+            self.number = None
+        else:
+            self.number = Number(self.pos, value, group)
 
 
 class Number(pygame.sprite.Sprite):
