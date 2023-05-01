@@ -15,6 +15,17 @@ class Sudoku:
         self.grid = grid
         self.grid_pos = grid_pos
 
+    def get_number(self, row: int, col: int) -> int:
+        """
+        Gets the number at the specified row and column of the Sudoku grid.
+
+        :param row: The row of the number.
+        :param col: The column of the number.
+        :return: The number at the specified position, or -1 if there is no number.
+        """
+        square = self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
+        return square.value
+
     def insert_number(self, row: int, col: int, value: int):
         """
         Inserts a number in a specified row and column of the Sudoku grid.
