@@ -23,7 +23,7 @@ class Sudoku:
         :param col: The column of the number.
         :return: The number at the specified position, or -1 if there is no number.
         """
-        square = self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
+        square = self._get_square(row, col)
         return square.value
 
     def insert_number(self, row: int, col: int, value: int):
@@ -37,7 +37,7 @@ class Sudoku:
         """
         if not self.is_number_valid(row, col, value):
             return False
-        square = self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
+        square = self._get_square(row, col)
         group = square.groups()[0]
         square.set_value(value, group)
         return True
@@ -49,7 +49,7 @@ class Sudoku:
         :param row: The row from which the number should be removed.
         :param col: The column from which the number should be removed.
         """
-        square = self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
+        square = self._get_square(row, col)
         group = square.groups()[0]
         square.set_value(-1, group)
 
@@ -64,15 +64,24 @@ class Sudoku:
         :return: True if the number is valid, False otherwise.
         """
         # Check if the number is already in the same row or column
-        for i in range(9):
-            if self.grid.boxes[row // 3][i // 3].squares[row % 3][i % 3].value == num:
-                return False
-            if self.grid.boxes[i // 3][col // 3].squares[i % 3][col % 3].value == num:
-                return False
+        if self._value_in_row(row, num):
+            return False
+        if self._value_in_col(col, num):
+            return False
             
         # Check if the number is already in the same box
-        box = self._get_box(self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3])
+        box = self._get_box(self._get_square(row, col))
         return not self._value_in_box(box, num)
+    
+    def _get_square(self, row: int, col: int) -> Square:
+        """
+        Returns the Square object at a specified row and column of the Sudoku grid.
+
+        :param row: The row of the Square object.
+        :param col: The column of the Square object.
+        :return: The Square object at the specified position.
+        """
+        return self.grid.boxes[row // 3][col // 3].squares[row % 3][col % 3]
 
     def _get_box(self, square: Square) -> Box:
         """
@@ -81,9 +90,35 @@ class Sudoku:
         :param square: The Square object.
         :return: The Box object to which the specified Square object belongs.
         """
-        box_x = square.col // 3
-        box_y = square.row // 3
-        return self.grid.boxes[box_y][box_x]
+        box_row = square.row // 3
+        box_col = square.col // 3
+        return self.grid.boxes[box_row][box_col]
+    
+    def _value_in_row(self, row: int, num: int) -> bool:
+        """
+        Checks if a number is already in the same row.
+
+        :param row: The row to check.
+        :param num: The number to check.
+        :return: True if the number is already in the same row, False otherwise.
+        """
+        for i in range(9):
+            if self.get_number(row, i) == num:
+                return True
+        return False
+    
+    def _value_in_col(self, col: int, num: int) -> bool:
+        """
+        Checks if a number is already in the same column.
+
+        :param col: The column to check.
+        :param num: The number to check.
+        :return: True if the number is already in the same column, False otherwise.
+        """
+        for i in range(9):
+            if self.get_number(i, col) == num:
+                return True
+        return False
     
     def _value_in_box(self, box: Box, value: int) -> bool:
         """
