@@ -37,6 +37,11 @@ class Menu:
         }
 
     def set_button(self, key: str, value):
+        """
+        Remove a keypair and set it anew.
+        :param key: The key in the pair
+        :param value: The value in the pair
+        """
         self.buttons.pop(key)
         self.buttons[key] = value
 
@@ -50,6 +55,9 @@ class Menu:
             self.buttons[key] = None
 
     def close(self):
+        """
+        Kill all non-None buttons in self.buttons
+        """
         for key in [key for key in self.buttons.keys()]:
             self.kill_button(key)
 
@@ -206,6 +214,9 @@ class BackButton(pygame.sprite.Sprite):
         self.rect.center = pos
 
     def pressed(self):
+        """
+        Returns to the original state of the menu
+        """
         self.menu.set_button("play", PlayButton(self.menu.button_pos.get("play"), self.menu, self.sprite_groups))
         self.menu.set_button("settings", SettingsButton(self.menu.button_pos.get("settings"), self.menu, self.sprite_groups))
         for button_key in ["manual", "auto", "back"]:

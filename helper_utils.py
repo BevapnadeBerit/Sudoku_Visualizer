@@ -14,10 +14,11 @@ SMALL_BUTTON_SIZE = (150, 75)
 colors = {
     "white": (255, 255, 255),
     "black": (0, 0, 0),
-    "gray": (140, 140, 140),
+    "gray": (200, 200, 200),
     "red": (255, 102, 102),
     "blue": (173, 216, 230),
     "green": (102, 255, 102),
+    "grid": (140, 140, 140),
 }
 
 
@@ -31,6 +32,11 @@ def value_of_number_key(key: int) -> int:
 
 
 def get_color(color: str) -> tuple[int, int, int] | None:
+    """
+    Returns the RGB tuple of given color
+    :param color: The given color
+    :return: RGB tuple
+    """
     if color in colors.keys():
         return colors[color]
     else:
@@ -38,4 +44,8 @@ def get_color(color: str) -> tuple[int, int, int] | None:
 
 
 def post(event: int):
+    """
+    Event post shortcut
+    :param event: event to post
+    """
     pygame.event.post(pygame.event.Event(event))

@@ -27,6 +27,11 @@ class Settings:
         }
 
     def set_button(self, key: str, value):
+        """
+        Remove a keypair and set it anew.
+        :param key: The key in the pair
+        :param value: The value in the pair
+        """
         self.buttons.pop(key)
         self.buttons[key] = value
 
@@ -40,6 +45,9 @@ class Settings:
             self.buttons[key] = None
 
     def close(self):
+        """
+        Kill all non-None buttons in self.buttons
+        """
         for key in [key for key in self.buttons.keys()]:
             self.kill_button(key)
 

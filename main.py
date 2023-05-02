@@ -6,6 +6,11 @@ from settings import *
 
 
 def button_collision(room: Menu | Settings, room_key: str):
+    """
+    Checks if a button is pressed and activates the pressed method on it if true.
+    :param room: Room to search in
+    :param room_key: sprite group to search in
+    """
     center = None
     target_button = None
     for sprite in sprite_dict.get(room_key):
@@ -19,6 +24,20 @@ def button_collision(room: Menu | Settings, room_key: str):
                     target_button = button
                     break
         target_button.pressed()
+
+
+def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sprite.Group], *group_keys: str):
+    """
+    Draws a number of sprite groups onto a Surface with a background of given color.
+    :param surface: Surface to draw onto
+    :param color: color of the background
+    :param sprite_groups: sprite group dict
+    :param group_keys: keys to the sprite groups to draw
+    :return:
+    """
+    surface.fill(get_color(color))
+    for key in group_keys:
+        sprite_groups.get(key).draw(surface)
 
 
 # base settings
@@ -56,9 +75,9 @@ grid = None
 grid_pos = (int(WIDTH/2), int(HEIGHT/2))
 
 # selected square
-selected = None
-selected_value = None
-selected_color = None
+select = None
+select_value = None
+select_color = None
 
 post(MENU)
 
@@ -68,10 +87,10 @@ while running:
         # Always
         if event.type == pygame.KEYDOWN:
             if event.key == KEY_QUIT:
-                pygame.event.post(pygame.event.Event(pygame.QUIT))
+                post(pygame.QUIT)
 
             if event.key == KEY_FULLSCREEN:
-                pygame.event.post(pygame.event.Event(FULLSCREEN))
+                post(FULLSCREEN)
 
         elif event.type == MENU:
             menu = Menu((WIDTH, HEIGHT), sprite_dict)
@@ -108,36 +127,37 @@ while running:
         elif STATE == "GAME":
             if not AUTOMODE:
                 if event.type == pygame.KEYDOWN:
-                    if event.key in [
-                        pygame.K_1,
-                        pygame.K_2,
-                        pygame.K_3,
-                        pygame.K_4,
-                        pygame.K_5,
-                        pygame.K_6,
-                        pygame.K_7,
-                        pygame.K_8,
-                        pygame.K_9,
-                    ]:
-                        if selected is not None:
-                            selected.set_value(value_of_number_key(event.key), sprite_dict)
-                            selected.set_background(selected_color, sprite_dict)
-                            selected = None
-                            selected_value = None
-                    elif selected is not None and event.key is not pygame.K_f:
-                        selected.set_value(selected_value, sprite_dict)
-                        selected.set_background(selected_color, sprite_dict)
-                        selected = None
-                        selected_value = None
+                    if select:
+                        if event.key in [
+                            pygame.K_1,
+                            pygame.K_2,
+                            pygame.K_3,
+                            pygame.K_4,
+                            pygame.K_5,
+                            pygame.K_6,
+                            pygame.K_7,
+                            pygame.K_8,
+                            pygame.K_9,
+                        ]:
+                            select.set_value(value_of_number_key(event.key), sprite_dict)
+                            select.set_background(select_color, sprite_dict)
+                            select = None
+                            select_value = None
 
-                if event.type == pygame.MOUSEBUTTONDOWN and selected is None:
+                        elif event.key is not pygame.K_f:
+                            select.set_value(select_value, sprite_dict)
+                            select.set_background(select_color, sprite_dict)
+                            select = None
+                            select_value = None
+
+                if event.type == pygame.MOUSEBUTTONDOWN and select is None:
                     pressed_square = square_collision(grid, pygame.mouse.get_pos())
                     if pressed_square is not None:
-                        selected = pressed_square
-                        selected_value = pressed_square.value
-                        selected_color = pressed_square.background.color
-                        selected.set_value(-1, sprite_dict)
-                        selected.set_background(get_color("blue"), sprite_dict)
+                        select = pressed_square
+                        select_value = pressed_square.value
+                        select_color = pressed_square.background.color
+                        select.set_value(-1, sprite_dict)
+                        select.set_background(get_color("blue"), sprite_dict)
             else:  # AUTO
                 pass
 
@@ -151,21 +171,17 @@ while running:
 
     # Render
     if STATE == "MENU":
-        screen.fill(get_color("gray"))
-        sprite_dict.get("menu").draw(screen)
+        draw(screen, "gray", sprite_dict, "menu")
     elif STATE == "SETTINGS":
-        screen.fill(get_color("white"))
-        sprite_dict.get("settings").draw(screen)
+        draw(screen, "gray", sprite_dict, "settings")
     elif STATE == "GAME":
-        screen.fill(get_color("white"))
-        for group in [
-            "grid",
-            "box",
-            "square_background",
-            "square",
-            "number",
-        ]:
-            sprite_dict.get(group).draw(screen)
+        draw(screen, "white", sprite_dict,
+             "grid",
+             "box",
+             "square_background",
+             "square",
+             "number",
+             )
 
     # flip() the display to put your work on screen
     pygame.display.flip()
