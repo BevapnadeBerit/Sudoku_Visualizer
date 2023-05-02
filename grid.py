@@ -1,7 +1,8 @@
 import os
-
 import pygame
 from  pygame import Vector2
+
+from helper_utils import *
 
 GRID_OUTLINE = 30
 BOX_OUTLINE = 2
@@ -82,7 +83,7 @@ class Square(pygame.sprite.Sprite):
         self.number = None
         self.background = None
         self.set_value(value, groups)
-        self.set_background("white", groups)
+        self.set_background(get_color("white"), groups)
 
     def set_value(self, value: int, groups: dict[str, pygame.sprite.Group]):
         self.value = value
@@ -93,7 +94,7 @@ class Square(pygame.sprite.Sprite):
         else:
             self.number = Number(self.pos, value, groups)
 
-    def set_background(self, color: str, groups: dict[str, pygame.sprite.Group]):
+    def set_background(self, color: tuple[int, int, int], groups: dict[str, pygame.sprite.Group]):
         if self.background is not None:
             self.background.kill()
         self.background = SquareBackground(self.pos, color, groups)
@@ -105,7 +106,7 @@ class Number(pygame.sprite.Sprite):
     """
     def __init__(self, pos: tuple[int, int], value: int, groups: dict[str, pygame.sprite.Group]):
         super().__init__(groups.get("number"))
-        if value not in range(0, 10):
+        if value not in range(1, 10):
             self.kill()
         else:
             file = "number_" + str(value) + ".png"
@@ -120,12 +121,14 @@ class Number(pygame.sprite.Sprite):
 
 
 class SquareBackground(pygame.sprite.Sprite):
-    def __init__(self, pos: tuple[int, int], color: str, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], color: tuple[int, int, int], groups: dict[str, pygame.sprite.Group]):
         super().__init__(groups.get("square_background"))
         self.image = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))
         self.image.fill(color)
         self.rect = self.image.get_rect()
         self.rect.center = pos
+
+        self.color = color
 
 
 def square_collision(grid: Grid, pos: tuple[int, int]) -> Square | None:

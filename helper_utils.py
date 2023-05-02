@@ -1,5 +1,13 @@
 import pygame
 
+colors = {
+    "white": (255, 255, 255),
+    "black": (255, 255, 255),
+    "red": (255, 102, 102),
+    "blue": (173, 216, 230),
+    "green": (102, 255, 102),
+}
+
 
 def value_of_number_key(key: int):
     """
@@ -8,3 +16,10 @@ def value_of_number_key(key: int):
     :return: The translated value
     """
     return key - pygame.K_1 + 1
+
+
+def get_color(color: str):
+    if color in colors.keys():
+        return colors[color]
+    else:
+        return None

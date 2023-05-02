@@ -32,6 +32,7 @@ grid = Grid(grid_pos, 3, 3, 3, 3, sprite_dict)
 # selected square
 selected = None
 selected_value = None
+selected_color = None
 
 # custom events
 FULLSCREEN = pygame.USEREVENT + 1
@@ -60,10 +61,12 @@ while running:
                 ]:
                     if selected is not None:
                         selected.set_value(value_of_number_key(event.key), sprite_dict)
+                        selected.set_background(selected_color, sprite_dict)
                         selected = None
                         selected_value = None
                 elif selected is not None and event.key is not pygame.K_f:
                     selected.set_value(selected_value, sprite_dict)
+                    selected.set_background(selected_color, sprite_dict)
                     selected = None
                     selected_value = None
 
@@ -72,7 +75,9 @@ while running:
                 if pressed_square is not None:
                     selected = pressed_square
                     selected_value = pressed_square.value
-                    selected.set_value(0, sprite_dict)
+                    selected_color = pressed_square.background.color
+                    selected.set_value(-1, sprite_dict)
+                    selected.set_background(get_color("blue"), sprite_dict)
         else:  # AUTO
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
