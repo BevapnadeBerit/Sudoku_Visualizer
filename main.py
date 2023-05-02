@@ -16,11 +16,18 @@ clock = pygame.time.Clock()
 running = True
 
 # sprite groups
-grid_sprites = pygame.sprite.Group()
+
+sprite_dict = {
+    "grid": pygame.sprite.Group(),
+    "box": pygame.sprite.Group(),
+    "square": pygame.sprite.Group(),
+    "number": pygame.sprite.Group(),
+    "square_background": pygame.sprite.Group(),
+}
 
 # grid
 grid_pos = (int(WIDTH/2), int(HEIGHT/2))
-grid = Grid(grid_pos, 3, 3, 3, 3, grid_sprites)
+grid = Grid(grid_pos, 3, 3, 3, 3, sprite_dict)
 
 # selected square
 selected = None
@@ -52,11 +59,11 @@ while running:
                     pygame.K_9,
                 ]:
                     if selected is not None:
-                        selected.set_value(value_of_number_key(event.key), grid_sprites)
+                        selected.set_value(value_of_number_key(event.key), sprite_dict)
                         selected = None
                         selected_value = None
                 elif selected is not None and event.key is not pygame.K_f:
-                    selected.set_value(selected_value, grid_sprites)
+                    selected.set_value(selected_value, sprite_dict)
                     selected = None
                     selected_value = None
 
@@ -65,7 +72,7 @@ while running:
                 if pressed_square is not None:
                     selected = pressed_square
                     selected_value = pressed_square.value
-                    selected.set_value(0, grid_sprites)
+                    selected.set_value(0, sprite_dict)
         else:  # AUTO
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -79,7 +86,7 @@ while running:
                         for box in box_x:
                             for square_x in box.squares:
                                 for square in square_x:
-                                    square.set_value(randint(1, 9), grid_sprites)
+                                    square.set_value(randint(1, 9), sprite_dict)
 
         if event.type == pygame.QUIT:
             running = False
@@ -94,7 +101,14 @@ while running:
     screen.fill("white")
 
     # RENDER YOUR GAME HERE
-    grid_sprites.draw(screen)
+    for group in [
+        "grid",
+        "box",
+        "square_background",
+        "square",
+        "number",
+    ]:
+        sprite_dict.get(group).draw(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
