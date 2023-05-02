@@ -1,7 +1,7 @@
 import pygame
 from grid import *
 from helper_utils import *
-from random import choice, randint
+from random import randint
 
 # base settings
 WIDTH = 1280
@@ -16,7 +16,6 @@ clock = pygame.time.Clock()
 running = True
 
 # sprite groups
-
 sprite_dict = {
     "grid": pygame.sprite.Group(),
     "box": pygame.sprite.Group(),
@@ -40,7 +39,6 @@ FULLSCREEN = pygame.USEREVENT + 1
 while running:
     for event in pygame.event.get():
         if MANUAL:
-            # Checks for Input
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
@@ -96,16 +94,14 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        # Checks for fullscreen event
         elif event.type == FULLSCREEN:
             if screen.get_flags() & pygame.FULLSCREEN:
                 pygame.display.set_mode((WIDTH, HEIGHT))
             else:
                 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # CGPT
 
+    # Render
     screen.fill("white")
-
-    # RENDER YOUR GAME HERE
     for group in [
         "grid",
         "box",
@@ -117,7 +113,5 @@ while running:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-
-    clock.tick(FPS)  # limits FPS to 60
-
+    clock.tick(FPS)
 pygame.quit()
