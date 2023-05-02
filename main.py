@@ -7,7 +7,7 @@ from random import choice, randint
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
-MANUAL = False
+MANUAL = True
 
 # pygame setup
 pygame.init()
