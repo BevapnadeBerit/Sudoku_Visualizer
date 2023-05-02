@@ -26,7 +26,7 @@ class Grid(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = grid_pos
 
-        self.boxes: [[Box]] = []
+        self.boxes = []
         for v in range(v_boxes):
             current_array = []
             for h in range(h_boxes):
@@ -48,7 +48,7 @@ class Box(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = box_pos
 
-        self.squares: [[Square]] = []
+        self.squares = []
         for y in range(height):
             current_array = []
             for x in range(width):
@@ -126,22 +126,23 @@ def square_collision(grid: Grid, pos: tuple[int, int]) -> Square | None:
     box_y = None
 
     # Search for box
-    for box in grid.boxes[0]:
+    for row in grid.boxes:
+        box = row[0]
         d = v - Vector2(box.rect.center)
         if d.y in range(-half_box, half_box):
-            box_y = grid.boxes[0].index(box)
+            box_y = grid.boxes.index(row)
             break
-    for col in grid.boxes:
-        box = col[0]
+    for box in grid.boxes[0]:
         d = v - Vector2(box.rect.center)
         if d.x in range(-half_box, half_box):
-            box_x = grid.boxes.index(col)
+            box_x = grid.boxes[0].index(box)
+            break
 
     if box_x is None or box_y is None:
         return None
 
     # Found box
-    box = grid.boxes[box_x][box_y]
+    box = grid.boxes[box_y][box_x]
 
     # Search for square
     v = Vector2(pos)
@@ -149,18 +150,21 @@ def square_collision(grid: Grid, pos: tuple[int, int]) -> Square | None:
     square_x = None
     square_y = None
 
-    for square in box.squares[0]:
+    for row in box.squares:
+        square = row[0]
         d = v - Vector2(square.rect.center)
         if d.y in range(-half_square, half_square):
-            square_y = box.squares[0].index(square)
+            square_y = box.squares.index(row)
             break
-    for col in box.squares:
-        square = col[0]
+    for square in box.squares[0]:
         d = v - Vector2(square.rect.center)
         if d.x in range(-half_square, half_square):
-            square_x = box.squares.index(col)
+            square_x = box.squares[0].index(square)
+            break
 
+    print(square_x)
+    print(square_y)
     if square_x is None or square_y is None:
         return None
 
-    return box.squares[square_x][square_y]
+    return box.squares[square_y][square_x]
