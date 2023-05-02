@@ -1,9 +1,7 @@
 import os
-
 import pygame
 
-BIG_BUTTON_SIZE = (300, 100)
-SMALL_BUTTON_SIZE = (200, 100)
+from helper_utils import *
 
 
 class Menu:
@@ -19,8 +17,8 @@ class Menu:
         self.middle = int(screen_size[0] / 2)
         self.play_button_y = int(screen_size[1]/2)
         self.settings_button_offset_y = BIG_BUTTON_SIZE[1] + 20
-        self.selection_offset_x = BIG_BUTTON_SIZE[0] + 100
-        self.back_button_offset_y = SMALL_BUTTON_SIZE[1] + 100
+        self.selection_offset_x = int(BIG_BUTTON_SIZE[0]/2) + 40
+        self.back_button_offset_y = int(BIG_BUTTON_SIZE[1]/2) + int(SMALL_BUTTON_SIZE[1]/2) + 40
 
         self.button_pos = {
             "play": (self.middle, self.play_button_y),
@@ -38,6 +36,10 @@ class Menu:
             "back": None,
         }
 
+    def set_button(self, key: str, value):
+        self.buttons.pop(key)
+        self.buttons[key] = value
+
     def kill_button(self, key: str):
         """
         Kill the object if not None and set its value in self.buttons to None
@@ -46,6 +48,10 @@ class Menu:
         if self.buttons[key] is not None:
             self.buttons[key].kill()
             self.buttons[key] = None
+
+    def close(self):
+        for key in [key for key in self.buttons.keys()]:
+            self.kill_button(key)
 
 
 class PlayButton(pygame.sprite.Sprite):
@@ -58,9 +64,9 @@ class PlayButton(pygame.sprite.Sprite):
         :param pos: screen position
         :param groups: sprite group dict
         """
-        print(1)
         super().__init__(groups.get("menu"))
         self.menu = menu
+        self.sprite_groups = groups
 
         file_path = os.path.join("images", "play.png")
         image = pygame.image.load(file_path).convert_alpha()
@@ -71,14 +77,13 @@ class PlayButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-    def pressed(self, groups: dict[str, pygame.sprite.Group]):
+    def pressed(self):
         """
         Call the menu to make new buttons and remove unwanted ones
-        :param groups: sprite group dict
         """
-        self.menu.manual_button = ManualButton(self.menu.button_pos.get("manual"), self.menu, groups)
-        self.menu.auto_button = AutoButton(self.menu.button_pos.get("auto"), self.menu, groups)
-        self.menu.back_button = BackButton(self.menu.button_pos.get("back"), self.menu, groups)
+        self.menu.set_button("manual", ManualButton(self.menu.button_pos.get("manual"), self.menu, self.sprite_groups))
+        self.menu.set_button("auto", AutoButton(self.menu.button_pos.get("auto"), self.menu, self.sprite_groups))
+        self.menu.set_button("back", BackButton(self.menu.button_pos.get("back"), self.menu, self.sprite_groups))
         self.menu.kill_button("settings")
         self.menu.kill_button("play")
 
@@ -105,11 +110,12 @@ class SettingsButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-    def pressed(self, groups: dict[str, pygame.sprite.Group]):
+    def pressed(self):
         """
         Call the menu to kill everything and go to settings.
-        :param groups: sprite group dict
         """
+        post(SETTINGS)
+        self.menu.close()
 
 
 class ManualButton(pygame.sprite.Sprite):
@@ -134,11 +140,13 @@ class ManualButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-    def pressed(self, groups: dict[str, pygame.sprite.Group]):
+    def pressed(self):
         """
         Call the menu to kill everything and go to game in MANUAL mode.
-        :param groups: sprite group dict
         """
+        post(MANUAL)
+        post(GAME)
+        self.menu.close()
 
 
 class AutoButton(pygame.sprite.Sprite):
@@ -163,11 +171,14 @@ class AutoButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-    def pressed(self, groups: dict[str, pygame.sprite.Group]):
+    def pressed(self):
         """
         Call the menu to kill everything and go to game in AUTO mode.
         :param groups: sprite group dict
         """
+        post(AUTO)
+        post(GAME)
+        self.menu.close()
 
 
 class BackButton(pygame.sprite.Sprite):
@@ -182,6 +193,7 @@ class BackButton(pygame.sprite.Sprite):
         :param groups: sprite group dict
         """
         super().__init__(groups.get("menu"))
+        self.sprite_groups = groups
         self.menu = menu
 
         file_path = os.path.join("images", "back.png")
@@ -193,7 +205,11 @@ class BackButton(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
-    def pressed(self, groups: dict[str, pygame.sprite.Group]):
-        self.menu.play_button = PlayButton(self.menu.button_pos.get("play"), self.menu, groups)
+    def pressed(self):
+        self.menu.set_button("play", PlayButton(self.menu.button_pos.get("play"), self.menu, self.sprite_groups))
+        self.menu.set_button("settings", SettingsButton(self.menu.button_pos.get("settings"), self.menu, self.sprite_groups))
         for button_key in ["manual", "auto", "back"]:
             self.menu.kill_button(button_key)
+
+
+

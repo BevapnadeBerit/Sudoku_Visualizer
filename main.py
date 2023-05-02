@@ -2,15 +2,35 @@ import pygame
 from grid import *
 from helper_utils import *
 from menu import *
+from settings import *
 
-from random import randint
+
+def button_collision(room: Menu | Settings, room_key: str):
+    center = None
+    target_button = None
+    for sprite in sprite_dict.get(room_key):
+        if sprite.rect.collidepoint(pygame.mouse.get_pos()):
+            center = sprite.rect.center
+            break
+    if center is not None:
+        for button in room.buttons.values():
+            if button is not None:
+                if button.rect.center == center:
+                    target_button = button
+                    break
+        target_button.pressed()
+
 
 # base settings
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
-MANUAL = True
+AUTOMODE = False
 STATE = "MENU"
+
+# keybinds
+KEY_QUIT = pygame.K_q
+KEY_FULLSCREEN = pygame.K_f
 
 # pygame setup
 pygame.init()
@@ -30,7 +50,8 @@ sprite_dict = {
 }
 
 # room objects
-menu = Menu((WIDTH, HEIGHT), sprite_dict)
+menu = None
+settings = None
 grid = None
 grid_pos = (int(WIDTH/2), int(HEIGHT/2))
 
@@ -39,42 +60,53 @@ selected = None
 selected_value = None
 selected_color = None
 
-# custom events
-FULLSCREEN = pygame.USEREVENT + 1
-MENU = pygame.USEREVENT + 2
-SETTINGS = pygame.USEREVENT + 3
-GAME = pygame.USEREVENT + 4
-
+post(MENU)
 
 while running:
     for event in pygame.event.get():
 
         # Always
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == KEY_QUIT:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
 
-            if event.key == pygame.K_f:
+            if event.key == KEY_FULLSCREEN:
                 pygame.event.post(pygame.event.Event(FULLSCREEN))
+
         elif event.type == MENU:
-            STATE = MENU
-            continue
-        elif event.type == SETTINGS:
-            STATE = SETTINGS
-            continue
-        elif event.type == GAME:
-            if grid is not None:
-                grid.kill()
-            grid = Grid(grid_pos, 3, 3, 3, 3, sprite_dict)
-            STATE = GAME
+            menu = Menu((WIDTH, HEIGHT), sprite_dict)
+            settings = None
+            grid = None
+            STATE = "MENU"
             continue
 
+        elif event.type == SETTINGS:
+            menu = None
+            settings = Settings((WIDTH, HEIGHT), sprite_dict)
+            grid = None
+            STATE = "SETTINGS"
+            continue
+
+        elif event.type == GAME:
+            menu = None
+            settings = None
+            grid = Grid(grid_pos, 3, 3, 3, 3, sprite_dict)
+            STATE = "GAME"
+            continue
+
+        elif event.type == MANUAL:
+            AUTOMODE = False
+        elif event.type == AUTO:
+            AUTOMODE = True
+
         if STATE == "MENU":
-            pass
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                button_collision(menu, "menu")
         elif STATE == "SETTINGS":
-            pass
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                button_collision(settings, "settings")
         elif STATE == "GAME":
-            if MANUAL:
+            if not AUTOMODE:
                 if event.type == pygame.KEYDOWN:
                     if event.key in [
                         pygame.K_1,
@@ -107,12 +139,7 @@ while running:
                         selected.set_value(-1, sprite_dict)
                         selected.set_background(get_color("blue"), sprite_dict)
             else:  # AUTO
-                if event.key == pygame.K_r:
-                    for box_x in grid.boxes:
-                        for box in box_x:
-                            for square_x in box.squares:
-                                for square in square_x:
-                                    square.set_value(randint(1, 9), sprite_dict)
+                pass
 
         if event.type == pygame.QUIT:
             running = False
@@ -123,12 +150,14 @@ while running:
                 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
     # Render
-    screen.fill(get_color("white"))
     if STATE == "MENU":
+        screen.fill(get_color("gray"))
         sprite_dict.get("menu").draw(screen)
     elif STATE == "SETTINGS":
-        pass
+        screen.fill(get_color("white"))
+        sprite_dict.get("settings").draw(screen)
     elif STATE == "GAME":
+        screen.fill(get_color("white"))
         for group in [
             "grid",
             "box",
@@ -142,3 +171,6 @@ while running:
     pygame.display.flip()
     clock.tick(FPS)
 pygame.quit()
+
+
+
