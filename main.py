@@ -98,10 +98,10 @@ while running:
             if screen.get_flags() & pygame.FULLSCREEN:
                 pygame.display.set_mode((WIDTH, HEIGHT))
             else:
-                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # CGPT
+                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
     # Render
-    screen.fill("white")
+    screen.fill(get_color("white"))
     for group in [
         "grid",
         "box",

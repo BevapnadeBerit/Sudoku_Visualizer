@@ -31,7 +31,7 @@ class Grid(pygame.sprite.Sprite):
         super().__init__(groups.get("grid"))
 
         self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
-        self.image.fill("gray")
+        self.image.fill(get_color("gray"))
         self.rect = self.image.get_rect()
         self.rect.center = grid_pos
 
@@ -62,7 +62,7 @@ class Box(pygame.sprite.Sprite):
         super().__init__(groups.get("box"))
 
         self.image = pygame.Surface((BOX_SIZE, BOX_SIZE))
-        self.image.fill("black")
+        self.image.fill(get_color("black"))
         self.rect = self.image.get_rect()
         self.rect.center = box_pos
 
