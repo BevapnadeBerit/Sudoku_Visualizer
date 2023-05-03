@@ -47,6 +47,19 @@ def get_color(color: str) -> tuple[int, int, int] | None:
         return colors[color]
     else:
         return None
+    
+def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sprite.Group], *group_keys: str):
+    """
+    Draws a number of sprite groups onto a Surface with a background of given color.
+    :param surface: Surface to draw onto
+    :param color: color of the background
+    :param sprite_groups: sprite group dict
+    :param group_keys: keys to the sprite groups to draw
+    :return:
+    """
+    surface.fill(get_color(color))
+    for key in group_keys:
+        sprite_groups.get(key).draw(surface)
 
 
 def post(event: int):
