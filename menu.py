@@ -15,7 +15,6 @@ class Menu:
         """
         self.sprite_groups = {
             "menu": pygame.sprite.Group(),
-            "settings": pygame.sprite.Group(),
         }
 
         self.middle = int(screen_size[0]/2)

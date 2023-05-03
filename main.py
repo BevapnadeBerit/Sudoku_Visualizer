@@ -147,7 +147,7 @@ while running:
     if STATE == "MENU":
         menu.draw_menu(screen)
     elif STATE == "SETTINGS":
-        menu.draw_settings(screen)
+        settings.draw_settings(screen)
     elif STATE == "GAME":
         grid.draw_grid(screen)
 
