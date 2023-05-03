@@ -11,14 +11,13 @@ class Menu:
     def __init__(self, screen_size: tuple[int, int], groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a Menu object.
-        :param screen_size: width and height of screen
         :param groups: sprite group dict
         """
-        self.middle = int(screen_size[0] / 2)
+        self.middle = int(screen_size[0]/2)
         self.play_button_y = int(screen_size[1]/2)
         self.settings_button_offset_y = BIG_BUTTON_SIZE[1] + 20
-        self.selection_offset_x = int(BIG_BUTTON_SIZE[0]/2) + 40
-        self.back_button_offset_y = int(BIG_BUTTON_SIZE[1]/2) + int(SMALL_BUTTON_SIZE[1]/2) + 40
+        self.selection_offset_x = int(BIG_BUTTON_SIZE[0]/2 + 40)
+        self.back_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 40)
 
         self.button_pos = {
             "play": (self.middle, self.play_button_y),

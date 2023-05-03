@@ -5,15 +5,6 @@ import pygame
 WIDTH = 1280
 HEIGHT = 720
 FPS = 60
-STATE = "MENU"
-AUTOMODE = False
-
-# settings
-SCREENSIZE = (WIDTH, HEIGHT)
-
-# keybinds
-KEY_QUIT = pygame.K_q
-KEY_FULLSCREEN = pygame.K_f
 
 # custom events main
 FULLSCREEN = pygame.USEREVENT + 1

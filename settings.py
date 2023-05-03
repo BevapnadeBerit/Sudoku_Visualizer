@@ -12,12 +12,12 @@ class Settings:
     def __init__(self, screen_size: tuple[int, int], groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a Menu object.
-        :param screen_size: width and height of screen
         :param groups: sprite group dict
         """
-        self.middle = int(screen_size[0] / 2)
-        self.back_button_y = int(screen_size[1]/2) + 200
-        self.screen_size_button_offset_y = BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20
+        self.screen_size = screen_size
+        self.middle = int(screen_size[0]/2)
+        self.back_button_y = int(screen_size[1]/2 + 200)
+        self.screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
 
         self.button_pos = {
             "back": (self.middle, self.back_button_y),
@@ -53,6 +53,8 @@ class Settings:
         """
         for key in [key for key in self.buttons.keys()]:
             self.kill_button(key)
+            if key == "screen":
+                print("DESTROYED")
 
 
 class BackButton(pygame.sprite.Sprite):
@@ -101,7 +103,7 @@ class ScreenSizeButton(pygame.sprite.Sprite):
         super().__init__(groups.get("settings"))
         self.settings = settings
 
-        if is_windowed():
+        if is_windowed(settings.screen_size):
             file_path = os.path.join("images", "fullscreen.png")
         else:
             file_path = os.path.join("images", "windowed.png")
@@ -123,9 +125,9 @@ class ScreenSizeButton(pygame.sprite.Sprite):
         self.settings.close()
 
 
-def is_windowed():
+def is_windowed(screen_size):
     """
     Check if windowed
     :return: true if windowed, false if not
     """
-    return SCREENSIZE == (WIDTH, HEIGHT)
+    return screen_size == (WIDTH, HEIGHT)

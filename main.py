@@ -40,9 +40,19 @@ def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sp
         sprite_groups.get(key).draw(surface)
 
 
+# States
+STATE = "MENU"
+AUTOMODE = False
+
+# settings
+SCREENSIZE = (WIDTH, HEIGHT)
+
+# key-binds
+KEY_QUIT = pygame.K_q
+
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode(SCREENSIZE, pygame.RESIZABLE)
+screen = pygame.display.set_mode(SCREENSIZE)
 clock = pygame.time.Clock()
 running = True
 
@@ -61,7 +71,6 @@ sprite_dict = {
 menu = None
 settings = None
 grid = None
-grid_pos = (int(SCREENSIZE[0]/2), int(SCREENSIZE[1]/2))
 
 # selected square
 select = None
@@ -77,9 +86,6 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == KEY_QUIT:
                 post(pygame.QUIT)
-
-            if event.key == KEY_FULLSCREEN:
-                post(FULLSCREEN)
 
         elif event.type == MENU:
             menu = Menu(SCREENSIZE, sprite_dict)
@@ -160,6 +166,8 @@ while running:
             else:
                 pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 SCREENSIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
+            print("CHANGE")
+            print(SCREENSIZE)
 
     # Render
     if STATE == "MENU":
