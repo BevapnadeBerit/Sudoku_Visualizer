@@ -13,7 +13,7 @@ def button_collision(room: Menu | Settings, room_key: str):
     """
     center = None
     target_button = None
-    for sprite in sprite_dict.get(room_key):
+    for sprite in room.sprite_groups[room_key]:
         if sprite.rect.collidepoint(pygame.mouse.get_pos()):
             center = sprite.rect.center
             break
@@ -24,21 +24,6 @@ def button_collision(room: Menu | Settings, room_key: str):
                     target_button = button
                     break
         target_button.pressed()
-
-
-def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sprite.Group], *group_keys: str):
-    """
-    Draws a number of sprite groups onto a Surface with a background of given color.
-    :param surface: Surface to draw onto
-    :param color: color of the background
-    :param sprite_groups: sprite group dict
-    :param group_keys: keys to the sprite groups to draw
-    :return:
-    """
-    surface.fill(get_color(color))
-    for key in group_keys:
-        sprite_groups.get(key).draw(surface)
-
 
 # States
 STATE = "MENU"
@@ -55,17 +40,6 @@ pygame.init()
 screen = pygame.display.set_mode(SCREENSIZE)
 clock = pygame.time.Clock()
 running = True
-
-# sprite groups
-sprite_dict = {
-    "grid": pygame.sprite.Group(),
-    "box": pygame.sprite.Group(),
-    "square": pygame.sprite.Group(),
-    "number": pygame.sprite.Group(),
-    "square_background": pygame.sprite.Group(),
-    "menu": pygame.sprite.Group(),
-    "settings": pygame.sprite.Group(),
-}
 
 # room objects
 menu = None
@@ -88,7 +62,7 @@ while running:
                 post(pygame.QUIT)
 
         elif event.type == MENU:
-            menu = Menu(SCREENSIZE, sprite_dict)
+            menu = Menu(SCREENSIZE)
             settings = None
             grid = None
             STATE = "MENU"
@@ -96,7 +70,7 @@ while running:
 
         elif event.type == SETTINGS:
             menu = None
-            settings = Settings(SCREENSIZE, sprite_dict)
+            settings = Settings(SCREENSIZE)
             grid = None
             STATE = "SETTINGS"
             continue
@@ -104,7 +78,7 @@ while running:
         elif event.type == GAME:
             menu = None
             settings = None
-            grid = Grid(SCREENSIZE, 3, 3, 3, 3, sprite_dict)
+            grid = Grid(SCREENSIZE, 3, 3, 3, 3)
             STATE = "GAME"
             continue
 
@@ -134,14 +108,14 @@ while running:
                             pygame.K_8,
                             pygame.K_9,
                         ]:
-                            select.set_value(value_of_number_key(event.key), sprite_dict)
-                            select.set_background(select_color, sprite_dict)
+                            select.set_value(value_of_number_key(event.key))
+                            select.set_background(select_color)
                             select = None
                             select_value = None
 
                         elif event.key is not pygame.K_f:
-                            select.set_value(select_value, sprite_dict)
-                            select.set_background(select_color, sprite_dict)
+                            select.set_value(select_value)
+                            select.set_background(select_color)
                             select = None
                             select_value = None
 
@@ -152,8 +126,8 @@ while running:
                             select = pressed_square
                             select_value = pressed_square.value
                             select_color = pressed_square.background.color
-                            select.set_value(-1, sprite_dict)
-                            select.set_background(get_color("blue"), sprite_dict)
+                            select.set_value(-1)
+                            select.set_background(get_color("blue"))
             else:  # AUTO
                 pass
 
@@ -171,17 +145,11 @@ while running:
 
     # Render
     if STATE == "MENU":
-        draw(screen, "gray", sprite_dict, "menu")
+        menu.draw_menu(screen)
     elif STATE == "SETTINGS":
-        draw(screen, "gray", sprite_dict, "settings")
+        settings.draw_settings(screen)
     elif STATE == "GAME":
-        draw(screen, "white", sprite_dict,
-             "grid",
-             "box",
-             "square_background",
-             "square",
-             "number",
-             )
+        grid.draw_grid(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()

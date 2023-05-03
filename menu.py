@@ -8,11 +8,15 @@ class Menu:
     """
     The menu screen
     """
-    def __init__(self, screen_size: tuple[int, int], groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, screen_size: tuple[int, int]):
         """
         Initializes a Menu object.
         :param groups: sprite group dict
         """
+        self.sprite_groups = {
+            "menu": pygame.sprite.Group(),
+        }
+
         self.middle = int(screen_size[0]/2)
         self.play_button_y = int(screen_size[1]/2)
         self.settings_button_offset_y = BIG_BUTTON_SIZE[1] + 20
@@ -28,12 +32,18 @@ class Menu:
         }
 
         self.buttons = {
-            "play": PlayButton(self.button_pos.get("play"), self, groups),
-            "settings": SettingsButton(self.button_pos.get("settings"), self, groups),
+            "play": PlayButton(self.button_pos.get("play"), self, self.sprite_groups),
+            "settings": SettingsButton(self.button_pos.get("settings"), self, self.sprite_groups),
             "manual": None,
             "auto": None,
             "back": None,
         }
+
+    def draw_menu(self, surface: pygame.Surface):
+        draw(surface, "gray", self.sprite_groups, "menu")
+        
+    def draw_settings(self, surface: pygame.Surface):
+        draw(surface, "gray", self.sprite_groups, "settings")
 
     def set_button(self, key: str, value):
         """
@@ -65,15 +75,15 @@ class PlayButton(pygame.sprite.Sprite):
     """
     Button that forwards to MANUAL/AUTO options
     """
-    def __init__(self, pos: tuple[int, int], menu: Menu, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a PlayButton object.
         :param pos: screen position
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("menu"))
+        super().__init__(sprite_groups.get("menu"))
         self.menu = menu
-        self.sprite_groups = groups
+        self.sprite_groups = sprite_groups
 
         file_path = os.path.join("images", "play.png")
         image = pygame.image.load(file_path).convert_alpha()
@@ -99,13 +109,13 @@ class SettingsButton(pygame.sprite.Sprite):
     """
     Button that opens settings
     """
-    def __init__(self, pos: tuple[int, int], menu: Menu, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a SettingsButton object.
         :param pos: screen position
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("menu"))
+        super().__init__(sprite_groups.get("menu"))
         self.menu = menu
 
         file_path = os.path.join("images", "settings.png")
@@ -129,13 +139,13 @@ class ManualButton(pygame.sprite.Sprite):
     """
     Button that opens game in MANUAL mode
     """
-    def __init__(self, pos: tuple[int, int], menu: Menu, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a ManualButton object.
         :param pos: screen position
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("menu"))
+        super().__init__(sprite_groups.get("menu"))
         self.menu = menu
 
         file_path = os.path.join("images", "manual.png")
@@ -160,13 +170,13 @@ class AutoButton(pygame.sprite.Sprite):
     """
     Button that opens game in AUTO mode
     """
-    def __init__(self, pos: tuple[int, int], menu: Menu, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a AutoButton object.
         :param pos: screen position
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("menu"))
+        super().__init__(sprite_groups.get("menu"))
         self.menu = menu
 
         file_path = os.path.join("images", "auto.png")
@@ -192,15 +202,15 @@ class BackButton(pygame.sprite.Sprite):
     """
     Button that returns to before the MANUAL/AUTO selection
     """
-    def __init__(self, pos: tuple[int, int], menu: Menu, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a BackButton object.
         :param pos: screen position
         :param menu: the menu
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("menu"))
-        self.sprite_groups = groups
+        super().__init__(sprite_groups.get("menu"))
+        self.sprite_groups = sprite_groups
         self.menu = menu
 
         file_path = os.path.join("images", "back.png")

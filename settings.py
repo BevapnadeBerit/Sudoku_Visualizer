@@ -9,11 +9,15 @@ class Settings:
     """
     The settings screen
     """
-    def __init__(self, screen_size: tuple[int, int], groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, screen_size: tuple[int, int]):
         """
         Initializes a Menu object.
         :param groups: sprite group dict
         """
+        self.sprite_groups = {
+            "menu": pygame.sprite.Group(),
+            "settings": pygame.sprite.Group(),
+        }
         self.screen_size = screen_size
         self.middle = int(screen_size[0]/2)
         self.back_button_y = int(screen_size[1]/2 + 200)
@@ -25,9 +29,12 @@ class Settings:
         }
 
         self.buttons = {
-            "back": BackButton(self.button_pos.get("back"), self, groups),
-            "screen": ScreenSizeButton(self.button_pos.get("screen"), self, groups)
+            "back": BackButton(self.button_pos.get("back"), self, self.sprite_groups),
+            "screen": ScreenSizeButton(self.button_pos.get("screen"), self, self.sprite_groups)
         }
+
+    def draw_settings(self, surface: pygame.Surface):
+        draw(surface, "gray", self.sprite_groups, "settings")
 
     def set_button(self, key: str, value):
         """
@@ -62,14 +69,14 @@ class BackButton(pygame.sprite.Sprite):
     Button that returns to menu
     """
 
-    def __init__(self, pos: tuple[int, int], settings: Settings, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], settings: Settings, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a BackButton object.
         :param pos: screen position
         :param settings: settings object
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("settings"))
+        super().__init__(sprite_groups.get("settings"))
         self.settings = settings
 
         file_path = os.path.join("images", "back.png")
@@ -93,14 +100,14 @@ class ScreenSizeButton(pygame.sprite.Sprite):
     """
     Resizes the screen
     """
-    def __init__(self, pos: tuple[int, int], settings: Settings, groups: dict[str, pygame.sprite.Group]):
+    def __init__(self, pos: tuple[int, int], settings: Settings, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a ScreenSizeButton object.
         :param pos: screen position
         :param settings: settings object
         :param groups: sprite group dict
         """
-        super().__init__(groups.get("settings"))
+        super().__init__(sprite_groups.get("settings"))
         self.settings = settings
 
         if is_windowed(settings.screen_size):
