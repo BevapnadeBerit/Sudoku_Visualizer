@@ -41,17 +41,6 @@ screen = pygame.display.set_mode(SCREENSIZE)
 clock = pygame.time.Clock()
 running = True
 
-# sprite groups
-sprite_dict = {
-    "grid": pygame.sprite.Group(),
-    "box": pygame.sprite.Group(),
-    "square": pygame.sprite.Group(),
-    "number": pygame.sprite.Group(),
-    "square_background": pygame.sprite.Group(),
-    "menu": pygame.sprite.Group(),
-    "settings": pygame.sprite.Group(),
-}
-
 # room objects
 menu = None
 settings = None
