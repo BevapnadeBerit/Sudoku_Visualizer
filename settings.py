@@ -17,13 +17,16 @@ class Settings:
         """
         self.middle = int(screen_size[0] / 2)
         self.back_button_y = int(screen_size[1]/2) + 200
+        self.screen_size_button_offset_y = BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20
 
         self.button_pos = {
             "back": (self.middle, self.back_button_y),
+            "screen": (self.middle, self.back_button_y - self.screen_size_button_offset_y),
         }
 
         self.buttons = {
             "back": BackButton(self.button_pos.get("back"), self, groups),
+            "screen": ScreenSizeButton(self.button_pos.get("screen"), self, groups)
         }
 
     def set_button(self, key: str, value):
@@ -61,6 +64,7 @@ class BackButton(pygame.sprite.Sprite):
         """
         Initializes a BackButton object.
         :param pos: screen position
+        :param settings: settings object
         :param groups: sprite group dict
         """
         super().__init__(groups.get("settings"))
@@ -77,7 +81,51 @@ class BackButton(pygame.sprite.Sprite):
 
     def pressed(self):
         """
-        Call the menu to kill everything and go to settings.
+        Call the settings to kill everything and go to the menu.
         """
         post(MENU)
         self.settings.close()
+
+
+class ScreenSizeButton(pygame.sprite.Sprite):
+    """
+    Resizes the screen
+    """
+    def __init__(self, pos: tuple[int, int], settings: Settings, groups: dict[str, pygame.sprite.Group]):
+        """
+        Initializes a ScreenSizeButton object.
+        :param pos: screen position
+        :param settings: settings object
+        :param groups: sprite group dict
+        """
+        super().__init__(groups.get("settings"))
+        self.settings = settings
+
+        if is_windowed():
+            file_path = os.path.join("images", "fullscreen.png")
+        else:
+            file_path = os.path.join("images", "windowed.png")
+        image = pygame.image.load(file_path).convert_alpha()
+        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
+
+        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
+        self.image.blit(image, (0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
+
+    def pressed(self):
+        """
+        Changes from Windowed to Fullscreen and vice versa.
+        Then goes back to the menu
+        """
+        post(FULLSCREEN)
+        post(MENU)
+        self.settings.close()
+
+
+def is_windowed():
+    """
+    Check if windowed
+    :return: true if windowed, false if not
+    """
+    return SCREENSIZE == (WIDTH, HEIGHT)

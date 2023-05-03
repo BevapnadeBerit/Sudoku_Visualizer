@@ -40,20 +40,9 @@ def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sp
         sprite_groups.get(key).draw(surface)
 
 
-# base settings
-WIDTH = 1280
-HEIGHT = 720
-FPS = 60
-AUTOMODE = False
-STATE = "MENU"
-
-# keybinds
-KEY_QUIT = pygame.K_q
-KEY_FULLSCREEN = pygame.K_f
-
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode(SCREENSIZE, pygame.RESIZABLE)
 clock = pygame.time.Clock()
 running = True
 
@@ -72,7 +61,7 @@ sprite_dict = {
 menu = None
 settings = None
 grid = None
-grid_pos = (int(WIDTH/2), int(HEIGHT/2))
+grid_pos = (int(SCREENSIZE[0]/2), int(SCREENSIZE[1]/2))
 
 # selected square
 select = None
@@ -93,7 +82,7 @@ while running:
                 post(FULLSCREEN)
 
         elif event.type == MENU:
-            menu = Menu((WIDTH, HEIGHT), sprite_dict)
+            menu = Menu(SCREENSIZE, sprite_dict)
             settings = None
             grid = None
             STATE = "MENU"
@@ -101,7 +90,7 @@ while running:
 
         elif event.type == SETTINGS:
             menu = None
-            settings = Settings((WIDTH, HEIGHT), sprite_dict)
+            settings = Settings(SCREENSIZE, sprite_dict)
             grid = None
             STATE = "SETTINGS"
             continue
@@ -109,7 +98,7 @@ while running:
         elif event.type == GAME:
             menu = None
             settings = None
-            grid = Grid(grid_pos, 3, 3, 3, 3, sprite_dict)
+            grid = Grid(SCREENSIZE, 3, 3, 3, 3, sprite_dict)
             STATE = "GAME"
             continue
 
@@ -150,14 +139,15 @@ while running:
                             select = None
                             select_value = None
 
-                if event.type == pygame.MOUSEBUTTONDOWN and select is None:
-                    pressed_square = square_collision(grid, pygame.mouse.get_pos())
-                    if pressed_square is not None:
-                        select = pressed_square
-                        select_value = pressed_square.value
-                        select_color = pressed_square.background.color
-                        select.set_value(-1, sprite_dict)
-                        select.set_background(get_color("blue"), sprite_dict)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if select is None:
+                        pressed_square = square_collision(grid, pygame.mouse.get_pos())
+                        if pressed_square is not None:
+                            select = pressed_square
+                            select_value = pressed_square.value
+                            select_color = pressed_square.background.color
+                            select.set_value(-1, sprite_dict)
+                            select.set_background(get_color("blue"), sprite_dict)
             else:  # AUTO
                 pass
 
@@ -165,9 +155,11 @@ while running:
             running = False
         elif event.type == FULLSCREEN:
             if screen.get_flags() & pygame.FULLSCREEN:
-                pygame.display.set_mode((WIDTH, HEIGHT))
+                SCREENSIZE = (WIDTH, HEIGHT)
+                pygame.display.set_mode(SCREENSIZE)
             else:
-                screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                SCREENSIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
 
     # Render
     if STATE == "MENU":

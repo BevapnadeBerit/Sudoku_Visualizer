@@ -17,11 +17,11 @@ class Grid(pygame.sprite.Sprite):
     """
     A grid containing a 3x3 2d array of boxes.
     """
-    def __init__(self, grid_pos: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int,
+    def __init__(self, screen_size: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int,
                  groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a Grid object.
-        :param grid_pos: screen position
+        :param screen_size: screen position
         :param v_boxes: amount of boxes vertically
         :param h_boxes: amount of boxes horizontally
         :param v_squares: amount of squares in a box vertically
@@ -29,17 +29,18 @@ class Grid(pygame.sprite.Sprite):
         :param groups: sprite group dict
         """
         super().__init__(groups.get("grid"))
+        self.pos = (int(screen_size[0]/2), int(screen_size[1]/2))
 
         self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
         self.image.fill(get_color("grid"))
         self.rect = self.image.get_rect()
-        self.rect.center = grid_pos
+        self.rect.center = self.pos
 
         self.boxes = []
         for row in range(v_boxes):
             current_array = []
             for col in range(h_boxes):
-                box_pos = (grid_pos[0] + (col - 1) * BOX_SIZE, grid_pos[1] + (row - 1) * BOX_SIZE)
+                box_pos = (self.pos[0] + (col - 1) * BOX_SIZE, self.pos[1] + (row - 1) * BOX_SIZE)
                 current_array.append(Box(box_pos, h_squares, v_squares, row, col, groups))
             self.boxes.append(current_array)
 
