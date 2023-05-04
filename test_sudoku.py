@@ -8,6 +8,8 @@ import pygame
 pygame.init()
 pygame.display.set_mode((1, 1))
 
+import random
+
 class TestSudoku(unittest.TestCase):
 
     def setUp(self):
@@ -26,14 +28,22 @@ class TestSudoku(unittest.TestCase):
                     else:
                         self.assertFalse(self.sudoku.insert_number(row, col, num))
 
-    def test_insert_only_valid_numbers(self):
-        for row in range(9):
-            for col in range(9):
-                for num in range(-5, 15):  # Test numbers outside the valid range
-                    if 1 <= num <= 9:
-                        continue  # Skip valid numbers, since they are tested in test_insert_number
-                    self.assertFalse(self.sudoku.insert_number(row, col, num))
-                    self.assertNotEqual(self.sudoku.get_number(row, col), num)
+    def test_insert_invalid_numbers(self):
+        for num in range(-10, 20):
+            if num not in range(1, 10):
+                for row in range(9):
+                    for col in range(9):
+                        self.assertFalse(self.sudoku.insert_number(row, col, num))
+
+    def test_insert_valid_numbers(self):
+        for num in range(1, 10):
+            for _ in range(10):  # Test 10 random positions for each number
+                row, col = random.randint(0, 8), random.randint(0, 8)
+                is_valid = self.sudoku.is_number_valid(row, col, num)
+                is_inserted = self.sudoku.insert_number(row, col, num)
+                self.assertEqual(is_inserted, is_valid)
+                # Clean up the inserted number for the next iteration
+                self.sudoku.remove_number(row, col)
 
     def test_remove_number(self):
         for row in range(9):
@@ -56,17 +66,12 @@ class TestSudoku(unittest.TestCase):
         self.assertTrue(self.sudoku.is_number_valid(3, 4, 2))   # Valid placement
 
     def test_value_in_row_col(self):
-        self.sudoku.insert_number(0, 0, 1)
-        self.assertTrue(self.sudoku._value_in_row(0, 1))
-        self.assertFalse(self.sudoku._value_in_row(0, 2))
-        self.assertTrue(self.sudoku._value_in_col(0, 1))
-        self.assertFalse(self.sudoku._value_in_col(1, 1))
-
-        self.sudoku.insert_number(3, 3, 1)
-        self.assertTrue(self.sudoku._value_in_row(3, 1))
-        self.assertFalse(self.sudoku._value_in_row(3, 2))
-        self.assertTrue(self.sudoku._value_in_col(3, 1))
-        self.assertFalse(self.sudoku._value_in_col(4, 1))
+        for num in range(1, 10):
+            self.sudoku.insert_number(0, num - 1, num)
+            self.assertTrue(self.sudoku._value_in_row(0, num))
+            self.assertFalse(self.sudoku._value_in_row(1, num))
+            self.assertTrue(self.sudoku._value_in_col(num - 1, num))
+            self.assertFalse(self.sudoku._value_in_col(num - 1, num + 1 if num < 9 else 1))
 
 if __name__ == "__main__":
     unittest.main()
