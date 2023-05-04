@@ -79,6 +79,17 @@ class Sudoku:
         box = self._get_box(self._get_square(row, col))
         return not self._value_in_box(box, num)
     
+    def find_empty_square(self) -> Square | None:
+        """
+        Finds the next empty square in the Sudoku grid.
+        :return: The next empty Square, or None if there are no more empty squares.
+        """
+        for row in range(9):
+            for col in range(9):
+                if self.get_number(row, col) == -1:
+                    return self._get_square(row, col)
+        return None
+    
     def _get_square(self, row: int, col: int) -> Square:
         """
         Returns the Square object at a specified row and column of the Sudoku grid.
@@ -139,7 +150,3 @@ class Sudoku:
                 if square.value == value:
                     return True
         return False
-
-# Add the puzzle creation class later
-# class PuzzleGenerator:
-#     pass
