@@ -50,7 +50,7 @@ class Sudoku:
         :param col: The column from which the number should be removed.
         """
         square = self._get_square(row, col)
-        square.set_value(-1)
+        square.reset()
 
     def reset(self):
         """
