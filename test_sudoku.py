@@ -110,6 +110,102 @@ class TestSudoku(unittest.TestCase):
             for col in range(9):
                 self.assertEqual(self.sudoku.get_number(row, col), -1)
 
+    def test_is_grid_valid(self):
+        # Test for an empty grid
+        self.assertFalse(self.sudoku.is_grid_valid())
+
+        # Test for a grid with some random values
+        self.sudoku.insert_number(0, 0, 1)
+        self.sudoku.insert_number(0, 1, 2)
+        self.sudoku.insert_number(1, 0, 3)
+        self.sudoku.update_square_validities()
+        self.assertFalse(self.sudoku.is_grid_valid())  # Some Squares are still empty
+
+        # Test for an invalid grid
+        self.sudoku.insert_number(0, 2, 1)  # Same row
+        self.sudoku.update_square_validities()
+        self.assertFalse(self.sudoku.is_grid_valid())
+
+        # Test for a valid and filled grid
+        # (you can use a pre-filled Sudoku grid that you know is valid)
+        valid_filled_grid = [
+            [5, 3, 4, 6, 7, 8, 9, 1, 2],
+            [6, 7, 2, 1, 9, 5, 3, 4, 8],
+            [1, 9, 8, 3, 4, 2, 5, 6, 7],
+            [8, 5, 9, 7, 6, 1, 4, 2, 3],
+            [4, 2, 6, 8, 5, 3, 7, 9, 1],
+            [7, 1, 3, 9, 2, 4, 8, 5, 6],
+            [9, 6, 1, 5, 3, 7, 2, 8, 4],
+            [2, 8, 7, 4, 1, 9, 6, 3, 5],
+            [3, 4, 5, 2, 8, 6, 1, 7, 9]
+        ]
+        for row in range(9):
+            for col in range(9):
+                self.sudoku.insert_number(row, col, valid_filled_grid[row][col])
+        self.sudoku.update_square_validities()
+        self.assertTrue(self.sudoku.is_grid_valid())
+
+    def test_update_square_validities(self):
+        # Test for an empty grid
+        self.sudoku.update_square_validities()
+        for row in range(9):
+            for col in range(9):
+                square = self.sudoku._get_square(row, col)
+                self.assertIsNone(square.valid)
+
+        # Test for a grid with some random values
+        self.sudoku.insert_number(0, 0, 1)
+        self.sudoku.insert_number(0, 1, 2)
+        self.sudoku.insert_number(1, 0, 3)
+        self.sudoku.update_square_validities()
+        for row in range(9):
+            for col in range(9):
+                square = self.sudoku._get_square(row, col)
+                if square.value != -1:
+                    is_valid = self.sudoku.is_number_valid(row, col, square.value)
+                    self.assertEqual(square.valid, is_valid)
+                else:
+                    self.assertIsNone(square.valid)
+
+        # Test for an invalid grid
+        self.sudoku.insert_number(0, 2, 1)  # Same row
+        self.sudoku.update_square_validities()
+        for row in range(9):
+            for col in range(9):
+                square = self.sudoku._get_square(row, col)
+                if square.value != -1:
+                    is_valid = self.sudoku.is_number_valid(row, col, square.value)
+                    self.assertEqual(square.valid, is_valid)
+                else:
+                    self.assertIsNone(square.valid)
+
+    def test_update_square_validities_with_invalid_insertions(self):
+        # Fill the grid with values that will become invalid after subsequent insertions
+        self.sudoku.insert_number(0, 0, 1)
+        self.sudoku.insert_number(0, 1, 1)  # Same row
+        self.sudoku.insert_number(1, 0, 1)  # Same column
+        self.sudoku.insert_number(1, 1, 1)  # Same box
+
+        self.sudoku.update_square_validities()
+        self.assertFalse(self.sudoku.is_grid_valid())
+
+        # Continue inserting invalid values
+        self.sudoku.insert_number(0, 2, 1)  # Same row
+        self.sudoku.insert_number(2, 0, 1)  # Same column
+        self.sudoku.insert_number(1, 2, 1)  # Same box
+        self.sudoku.insert_number(2, 1, 1)  # Same box
+
+        self.sudoku.update_square_validities()
+        self.assertFalse(self.sudoku.is_grid_valid())
+
+        # Add even more invalid values
+        for i in range(3, 9):
+            self.sudoku.insert_number(0, i, 1)
+            self.sudoku.insert_number(i, 0, 1)
+
+        self.sudoku.update_square_validities()
+        self.assertFalse(self.sudoku.is_grid_valid())
+
 if __name__ == "__main__":
     unittest.main()
 
