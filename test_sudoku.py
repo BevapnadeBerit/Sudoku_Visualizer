@@ -73,6 +73,15 @@ class TestSudoku(unittest.TestCase):
             self.assertTrue(self.sudoku._value_in_col(num - 1, num))
             self.assertFalse(self.sudoku._value_in_col(num - 1, num + 1 if num < 9 else 1))
 
+    def test_reset(self):
+        for row in range(9):
+            for col in range(9):
+                self.sudoku.insert_number(row, col, 1)
+        self.sudoku.reset()
+        for row in range(9):
+            for col in range(9):
+                self.assertEqual(self.sudoku.get_number(row, col), -1)
+
 if __name__ == "__main__":
     unittest.main()
 
