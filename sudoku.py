@@ -96,6 +96,33 @@ class Sudoku:
                     return self._get_square(row, col)
         return None
     
+    def is_grid_valid(self) -> bool:
+        """
+        Checks the whole grid and returns True if all Squares are valid, False otherwise.
+        Squares are only valid if they are not empty and have a valid number.
+
+        :return: True if all Squares are valid, False otherwise.
+        """
+        for row in range(9):
+            for col in range(9):
+                square = self._get_square(row, col)
+                if not square.valid:
+                    return False
+        return True
+
+    def update_square_validities(self):
+        """
+        Updates all the Square's validities by calling is_number_valid on all of them.
+        WARNING: Destructive, since it will set previously valid Squares as invalid based
+        on later insertions.
+        """
+        for row in range(9):
+            for col in range(9):
+                value = self.get_number(row, col)
+                if value != -1:
+                    validity = self.is_number_valid(row, col, value)
+                    self._get_square(row, col).set_validity(validity)
+    
     def _get_square(self, row: int, col: int) -> Square:
         """
         Returns the Square object at a specified row and column of the Sudoku grid.
