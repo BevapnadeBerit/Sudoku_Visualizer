@@ -71,14 +71,14 @@ class Sudoku:
         :return: True if the number is valid, False otherwise.
         """
         # Check if the number is already in the same row or column
-        if self._value_in_row(row, num):
+        if self._value_in_row(row, num, exclude_col=col):
             return False
-        if self._value_in_col(col, num):
+        if self._value_in_col(col, num, exclude_row=row):
             return False
             
         # Check if the number is already in the same box
         box = self._get_box(self._get_square(row, col))
-        return not self._value_in_box(box, num)
+        return not self._value_in_box(box, num, exclude_row=row, exclude_col=col)
     
     def find_empty_square(self) -> Square | None:
         """
@@ -112,42 +112,47 @@ class Sudoku:
         box_col = square.col // 3
         return self.grid.boxes[box_row][box_col]
     
-    def _value_in_row(self, row: int, num: int) -> bool:
+    def _value_in_row(self, row: int, num: int, exclude_col: int = None) -> bool:
         """
         Checks if a number is already in the same row.
 
         :param row: The row to check.
         :param num: The number to check.
+        :param exclude_col: The column to exclude from the check.
         :return: True if the number is already in the same row, False otherwise.
         """
         for i in range(9):
-            if self.get_number(row, i) == num:
+            if i != exclude_col and self.get_number(row, i) == num:
                 return True
         return False
-    
-    def _value_in_col(self, col: int, num: int) -> bool:
+
+
+    def _value_in_col(self, col: int, num: int, exclude_row: int = None) -> bool:
         """
         Checks if a number is already in the same column.
 
         :param col: The column to check.
         :param num: The number to check.
+        :param exclude_row: The row to exclude from the check.
         :return: True if the number is already in the same column, False otherwise.
         """
         for i in range(9):
-            if self.get_number(i, col) == num:
+            if i != exclude_row and self.get_number(i, col) == num:
                 return True
         return False
-    
-    def _value_in_box(self, box: Box, value: int) -> bool:
+
+    def _value_in_box(self, box: Box, value: int, exclude_row: int = None, exclude_col: int = None) -> bool:
         """
         Checks if a value is already in any of the Squares of a specified Box object.
 
         :param box: The Box object.
         :param value: The value to check.
+        :param exclude_row: The row to exclude from the check.
+        :param exclude_col: The column to exclude from the check.
         :return: True if the value is already in the Box object, False otherwise.
         """
-        for square_row in box.squares:
-            for square in square_row:
-                if square.value == value:
+        for row_idx, square_row in enumerate(box.squares):
+            for col_idx, square in enumerate(square_row):
+                if (row_idx != exclude_row % 3 or col_idx != exclude_col % 3) and square.value == value:
                     return True
         return False
