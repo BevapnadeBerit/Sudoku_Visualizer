@@ -14,6 +14,7 @@ class Sudoku:
         """
         self.grid = grid
         self.grid_pos = grid_pos
+        self.empty_squares = 81
 
     def get_number(self, row: int, col: int) -> int:
         """
