@@ -51,6 +51,14 @@ class Sudoku:
         square = self._get_square(row, col)
         square.set_value(-1)
 
+    def reset(self):
+        """
+        Removes all the values from Squares in the grid.
+        """
+        for row in range(9):
+            for col in range(9):
+                self.remove_number(row, col)
+
     def is_number_valid(self, row: int, col: int, num: int) -> bool:
         """
         Checks if a number is valid to be inserted in a specified row and  
