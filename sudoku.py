@@ -35,7 +35,7 @@ class Sudoku:
         :param value: The value of the number to be inserted.
         :return: True if the number was successfully inserted, False otherwise.
         """
-        if not self.is_number_valid(row, col, value):
+        if value not in range(1, 10) or not self.is_number_valid(row, col, value):
             return False
         square = self._get_square(row, col)
         square.set_value(value)
