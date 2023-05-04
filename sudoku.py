@@ -38,8 +38,7 @@ class Sudoku:
         if not self.is_number_valid(row, col, value):
             return False
         square = self._get_square(row, col)
-        group = square.groups()[0]
-        square.set_value(value, group)
+        square.set_value(value)
         return True
     
     def remove_number(self, row: int, col: int):
@@ -50,8 +49,7 @@ class Sudoku:
         :param col: The column from which the number should be removed.
         """
         square = self._get_square(row, col)
-        group = square.groups()[0]
-        square.set_value(-1, group)
+        square.set_value(-1)
 
     def is_number_valid(self, row: int, col: int, num: int) -> bool:
         """
