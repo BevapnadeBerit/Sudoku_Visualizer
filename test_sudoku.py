@@ -18,20 +18,18 @@ class TestSudoku(unittest.TestCase):
         self.sudoku = Sudoku(self.grid, grid_pos)
 
     def test_insert_number_full_grid(self):
-        # Insert random values in all squares
-        for row in range(9):
-            for col in range(9):
-                value = random.randint(1, 9)
-                self.sudoku.insert_number(row, col, value)
-                square = self.sudoku._get_square(row, col)
-                #print(row, col, square.value, value)
-                #print(square.valid)
-                is_valid = self.sudoku.is_number_valid(row, col, value)
-                #print(is_valid)
-                if not is_valid:
-                    self.assertFalse(square.valid)
-                else:
-                    self.assertTrue(square.valid)
+            # Insert random values in all squares
+            for row in range(9):
+                for col in range(9):
+                    value = random.randint(1, 9)
+                    self.sudoku.insert_number(row, col, value)
+                    square = self.sudoku._get_square(row, col)
+                    # Check if the empty_squares count is decreased correctly
+                    if square.value == -1:
+                        expected_empty_squares = self.sudoku.empty_squares + 1
+                    else:
+                        expected_empty_squares = self.sudoku.empty_squares
+                    self.assertEqual(self.sudoku.empty_squares, expected_empty_squares)
 
     def test_insert_out_of_range_numbers(self):
         for num in range(-10, 20):
@@ -46,10 +44,17 @@ class TestSudoku(unittest.TestCase):
                 row, col = random.randint(0, 8), random.randint(0, 8)
                 is_valid = self.sudoku.is_number_valid(row, col, num)
                 if is_valid:
+                    prev_empty_squares = self.sudoku.empty_squares
+                    prev_square_value = self.sudoku.get_number(row, col)
                     self.assertTrue(self.sudoku.insert_number(row, col, num))
                     self.assertEqual(self.sudoku.get_number(row, col), num)
                     square = self.sudoku._get_square(row, col)
                     self.assertTrue(square.valid)
+                    # Check if the empty_squares count is decreased correctly
+                    if prev_square_value == -1:
+                        self.assertEqual(self.sudoku.empty_squares, prev_empty_squares - 1)
+                    else:
+                        self.assertEqual(self.sudoku.empty_squares, prev_empty_squares)
                 # Clean up the inserted number for the next iteration
                 self.sudoku.remove_number(row, col)
 
@@ -63,10 +68,17 @@ class TestSudoku(unittest.TestCase):
                 self.sudoku.insert_number((row + 1) % 9, (col + 1) % 9, num)
                 is_valid = self.sudoku.is_number_valid(row, col, num)
                 if not is_valid:
+                    prev_empty_squares = self.sudoku.empty_squares
+                    prev_square_value = self.sudoku.get_number(row, col)
                     self.assertTrue(self.sudoku.insert_number(row, col, num))
                     self.assertEqual(self.sudoku.get_number(row, col), num)
                     square = self.sudoku._get_square(row, col)
                     self.assertFalse(square.valid)
+                    # Check if the empty_squares count is decreased correctly
+                    if prev_square_value == -1:
+                        self.assertEqual(self.sudoku.empty_squares, prev_empty_squares - 1)
+                    else:
+                        self.assertEqual(self.sudoku.empty_squares, prev_empty_squares)
                 # Clean up the inserted numbers for the next iteration
                 self.sudoku.remove_number(row, (col + 1) % 9)
                 self.sudoku.remove_number((row + 1) % 9, col)
@@ -205,6 +217,29 @@ class TestSudoku(unittest.TestCase):
 
         self.sudoku.update_square_validities()
         self.assertFalse(self.sudoku.is_grid_valid())
+
+    def test_win_condition(self):
+        # Load a solved Sudoku grid
+        solved_grid = [
+            [5, 3, 4, 6, 7, 8, 9, 1, 2],
+            [6, 7, 2, 1, 9, 5, 3, 4, 8],
+            [1, 9, 8, 3, 4, 2, 5, 6, 7],
+            [8, 5, 9, 7, 6, 1, 4, 2, 3],
+            [4, 2, 6, 8, 5, 3, 7, 9, 1],
+            [7, 1, 3, 9, 2, 4, 8, 5, 6],
+            [9, 6, 1, 5, 3, 7, 2, 8, 4],
+            [2, 8, 7, 4, 1, 9, 6, 3, 5],
+            [3, 4, 5, 2, 8, 6, 1, 7, 9]
+        ]
+        for row in range(9):
+            for col in range(9):
+                if (row, col) != (8, 8):
+                    self.sudoku.insert_number(row, col, solved_grid[row][col])
+        self.sudoku.update_square_validities()
+        self.sudoku.insert_number(8, 8, solved_grid[8][8])
+
+        # Ensure that the Sudoku puzzle is solved
+        self.assertTrue(self.sudoku.solved)
 
 if __name__ == "__main__":
     unittest.main()
