@@ -15,6 +15,7 @@ class Sudoku:
         self.grid = grid
         self.grid_pos = grid_pos
         self.empty_squares = 81
+        self.solved = False
 
     def get_number(self, row: int, col: int) -> int:
         """
@@ -39,12 +40,22 @@ class Sudoku:
         if value not in range(1, 10):
             return False
         square = self._get_square(row, col)
+        if square.value == -1:  # Decrease the number of empty squares only if the square was empty
+            self.empty_squares -= 1
+
         if not self.is_number_valid(row, col, value):
             square.set_validity(False)
             square.set_value(value)
             return True
+
         square.set_validity(True)
         square.set_value(value)
+
+        if self.empty_squares == 0:  # If this was the last empty square
+            self.update_square_validities()  # Update validities to make sure the grid is valid
+            if self.is_grid_valid():
+                self.solved = True  # Set the win condition to True
+
         return True
     
     def remove_number(self, row: int, col: int):
