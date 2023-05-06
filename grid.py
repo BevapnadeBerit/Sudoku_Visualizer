@@ -126,10 +126,11 @@ class Square(pygame.sprite.Sprite):
         self.rect.center = square_pos
 
         self.value = None
+        self.valid = None
         self.number = None
         self.background = None
         self.set_value(value)
-        self.set_background(get_color("white"))
+        self.set_validity(None)
 
     def set_value(self, value: int):
         """
@@ -148,6 +149,21 @@ class Square(pygame.sprite.Sprite):
         else:
             self.number = Number(self.pos, value, self.number_sprites)
 
+    def set_validity(self, valid: bool|None):
+        """
+        Sets the validity of the Square.
+        Updates the background color of the square.
+        :param valid: boolean representing if the square is valid
+        :return: None
+        """
+        self.valid = valid
+        if valid is None:
+            self.set_background(get_color("white"))
+        elif valid:
+            self.set_background(get_color("green"))
+        else:
+            self.set_background(get_color("red"))
+
     def set_background(self, color: tuple[int, int, int]):
         """
         Sets the background of the Square
@@ -158,6 +174,13 @@ class Square(pygame.sprite.Sprite):
         if self.background is not None:
             self.background.kill()
         self.background = SquareBackground(self.pos, color, self.background_sprites)
+
+    def reset(self):
+        """
+        Resets the value and validity of the square
+        """
+        self.set_value(-1)
+        self.set_validity(None)
 
 
 class Number(pygame.sprite.Sprite):
