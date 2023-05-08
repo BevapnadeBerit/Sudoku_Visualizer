@@ -1,7 +1,5 @@
 import os
-
 import pygame
-
 from helper_utils import *
 
 
@@ -12,7 +10,7 @@ class Settings:
     def __init__(self, screen_size: tuple[int, int]):
         """
         Initializes a Menu object.
-        :param groups: sprite group dict
+        :param screen_size: width and height of screen
         """
         self.sprite_groups = {
             "menu": pygame.sprite.Group(),
@@ -23,17 +21,17 @@ class Settings:
         self.back_button_y = int(screen_size[1]/2 + 200)
         self.screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
 
-        self.button_pos = {
+        self.objects_pos = {
             "back": (self.middle, self.back_button_y),
             "screen": (self.middle, self.back_button_y - self.screen_size_button_offset_y),
         }
 
-        self.buttons = {
-            "back": BackButton(self.button_pos.get("back"), self, self.sprite_groups),
-            "screen": ScreenSizeButton(self.button_pos.get("screen"), self, self.sprite_groups)
+        self.objects = {
+            "back": BackButton(self.objects_pos.get("back"), self, self.sprite_groups),
+            "screen": ScreenSizeButton(self.objects_pos.get("screen"), self, self.sprite_groups)
         }
 
-    def draw_settings(self, surface: pygame.Surface):
+    def draw(self, surface: pygame.Surface):
         draw(surface, "gray", self.sprite_groups, "settings")
 
     def set_button(self, key: str, value):
@@ -42,26 +40,24 @@ class Settings:
         :param key: The key in the pair
         :param value: The value in the pair
         """
-        self.buttons.pop(key)
-        self.buttons[key] = value
+        self.objects.pop(key)
+        self.objects[key] = value
 
     def kill_button(self, key: str):
         """
-        Kill the object if not None and set its value in self.buttons to None
+        Kill the object if not None and set its value to None
         :param key: Key to the object
         """
-        if self.buttons[key] is not None:
-            self.buttons[key].kill()
-            self.buttons[key] = None
+        if self.objects[key] is not None:
+            self.objects[key].kill()
+            self.objects[key] = None
 
     def close(self):
         """
-        Kill all non-None buttons in self.buttons
+        Kill all buttons
         """
-        for key in [key for key in self.buttons.keys()]:
+        for key in [key for key in self.objects.keys()]:
             self.kill_button(key)
-            if key == "screen":
-                print("DESTROYED")
 
 
 class BackButton(pygame.sprite.Sprite):
@@ -74,7 +70,7 @@ class BackButton(pygame.sprite.Sprite):
         Initializes a BackButton object.
         :param pos: screen position
         :param settings: settings object
-        :param groups: sprite group dict
+        :param sprite_groups: sprite group dict
         """
         super().__init__(sprite_groups.get("settings"))
         self.settings = settings

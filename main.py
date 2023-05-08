@@ -18,12 +18,13 @@ def button_collision(room: Menu | Settings, room_key: str):
             center = sprite.rect.center
             break
     if center is not None:
-        for button in room.buttons.values():
+        for button in room.objects.values():
             if button is not None:
                 if button.rect.center == center:
                     target_button = button
                     break
         target_button.pressed()
+
 
 # States
 STATE = "MENU"
@@ -41,12 +42,10 @@ screen = pygame.display.set_mode(SCREENSIZE)
 clock = pygame.time.Clock()
 running = True
 
-# room objects
 menu = None
 settings = None
 grid = None
 
-# selected square
 select = None
 select_value = None
 select_color = None
@@ -140,18 +139,14 @@ while running:
             else:
                 pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 SCREENSIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-            print("CHANGE")
-            print(SCREENSIZE)
 
-    # Render
     if STATE == "MENU":
-        menu.draw_menu(screen)
+        menu.draw(screen)
     elif STATE == "SETTINGS":
-        settings.draw_settings(screen)
+        settings.draw(screen)
     elif STATE == "GAME":
         grid.draw_grid(screen)
 
-    # flip() the display to put your work on screen
     pygame.display.flip()
     clock.tick(FPS)
 pygame.quit()
