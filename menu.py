@@ -1,10 +1,10 @@
 import os
 import pygame
-
+from room import Room, Button
 from helper_utils import *
 
 
-class Menu:
+class Menu(Room):
     """
     The menu screen
     """
@@ -13,6 +13,7 @@ class Menu:
         Initializes a Menu object.
         :param screen_size: width and height of screen
         """
+        super().__init__()
         self.sprite_groups = {
             "menu": pygame.sprite.Group(),
         }
@@ -44,37 +45,9 @@ class Menu:
 
     def draw(self, surface: pygame.Surface):
         draw(surface, "gray", self.sprite_groups, "menu")
-        
-    def draw_settings(self, surface: pygame.Surface):
-        draw(surface, "gray", self.sprite_groups, "settings")
-
-    def set_button(self, key: str, value):
-        """
-        Remove a keypair and set it anew.
-        :param key: The key in the pair
-        :param value: The value in the pair
-        """
-        self.objects.pop(key)
-        self.objects[key] = value
-
-    def kill_button(self, key: str):
-        """
-        Kill the object if not None and set its value to None
-        :param key: Key to the object
-        """
-        if self.objects[key] is not None:
-            self.objects[key].kill()
-            self.objects[key] = None
-
-    def close(self):
-        """
-        Kill all buttons
-        """
-        for key in [key for key in self.objects.keys()]:
-            self.kill_button(key)
 
 
-class PlayButton(pygame.sprite.Sprite):
+class PlayButton(Button):
     """
     Button that forwards to MANUAL/AUTO options
     """
@@ -85,18 +58,9 @@ class PlayButton(pygame.sprite.Sprite):
         :param menu: the menu object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("menu"))
+        super().__init__(pos, BIG_BUTTON_SIZE, "play.png", "menu", sprite_groups)
         self.menu = menu
         self.sprite_groups = sprite_groups
-
-        file_path = os.path.join("images", "play.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
-
-        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
@@ -109,7 +73,7 @@ class PlayButton(pygame.sprite.Sprite):
         self.menu.kill_button("play")
 
 
-class SettingsButton(pygame.sprite.Sprite):
+class SettingsButton(Button):
     """
     Button that opens settings
     """
@@ -120,17 +84,8 @@ class SettingsButton(pygame.sprite.Sprite):
         :param menu: the menu object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("menu"))
+        super().__init__(pos, BIG_BUTTON_SIZE, "settings.png", "menu", sprite_groups)
         self.menu = menu
-
-        file_path = os.path.join("images", "settings.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
-
-        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
@@ -140,7 +95,7 @@ class SettingsButton(pygame.sprite.Sprite):
         self.menu.close()
 
 
-class ManualButton(pygame.sprite.Sprite):
+class ManualButton(Button):
     """
     Button that opens game in MANUAL mode
     """
@@ -151,17 +106,8 @@ class ManualButton(pygame.sprite.Sprite):
         :param menu: the menu object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("menu"))
+        super().__init__(pos, BIG_BUTTON_SIZE, "manual.png", "menu", sprite_groups)
         self.menu = menu
-
-        file_path = os.path.join("images", "manual.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
-
-        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
@@ -172,7 +118,7 @@ class ManualButton(pygame.sprite.Sprite):
         self.menu.close()
 
 
-class AutoButton(pygame.sprite.Sprite):
+class AutoButton(Button):
     """
     Button that opens game in AUTO mode
     """
@@ -183,17 +129,8 @@ class AutoButton(pygame.sprite.Sprite):
         :param menu: the menu object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("menu"))
+        super().__init__(pos, BIG_BUTTON_SIZE, "auto.png", "menu", sprite_groups)
         self.menu = menu
-
-        file_path = os.path.join("images", "auto.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
-
-        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
@@ -204,7 +141,7 @@ class AutoButton(pygame.sprite.Sprite):
         self.menu.close()
 
 
-class BackButton(pygame.sprite.Sprite):
+class BackButton(Button):
     """
     Button that returns to before the MANUAL/AUTO selection
     """
@@ -215,18 +152,9 @@ class BackButton(pygame.sprite.Sprite):
         :param menu: the menu object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("menu"))
+        super().__init__(pos, SMALL_BUTTON_SIZE, "back.png", "menu", sprite_groups)
         self.sprite_groups = sprite_groups
         self.menu = menu
-
-        file_path = os.path.join("images", "back.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, SMALL_BUTTON_SIZE)
-
-        self.image = pygame.Surface(SMALL_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
