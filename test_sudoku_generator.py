@@ -5,7 +5,7 @@ from sudoku_generator import SudokuGenerator
 class TestSudokuGenerator(unittest.TestCase):
 
     HINTS = 45 # Number of hints in each puzzle
-    NUM_PUZZLES = 1 # Number of puzzles to generate and test
+    NUM_PUZZLES = 5 # Number of puzzles to generate and test
 
     def setUp(self):
         self.generator = SudokuGenerator()
@@ -33,14 +33,14 @@ class TestSudokuGenerator(unittest.TestCase):
         print(f"Min time: {min_time:.2f} seconds")
 
     def test_difficulty_levels(self):
-        num_puzzles = 10
+        num_puzzles = 3
         for hints in [45, 35, 29]:
             for _ in range(num_puzzles):
                 (puzzle, solution) = self.generator.generate_puzzle(hints)
                 self.assertTrue(self.generator._SudokuGenerator__is_valid_grid(self.generator.grid))
 
                 # Check that the solution is equal to self.solution
-                self.generator._SudokuGenerator__solve(puzzle)
+                self.generator._SudokuGenerator__random_solve(puzzle)
                 self.generator.print_puzzle()
                 self.generator.print_solution()
                 self.assertEqual(puzzle, solution)

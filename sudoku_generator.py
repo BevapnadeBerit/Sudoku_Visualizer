@@ -40,6 +40,25 @@ class SudokuGenerator:
 
         return False
     
+    def __random_solve(self, grid: list[list[int]]) -> bool:
+        row, col = self.__find_empty(grid)
+
+        if row == -1 or col == -1:
+            return True
+
+        possible_values = list(range(1, 10))
+        random.shuffle(possible_values)
+        for num in possible_values:
+            if self.__is_valid(grid, row, col, num):
+                grid[row][col] = num
+
+                if self.__random_solve(grid):
+                    return True
+
+                grid[row][col] = -1
+
+        return False
+    
     def __is_valid_grid(self, grid: list[list[int]]) -> bool:
         for row in range(9):
             for col in range(9):
