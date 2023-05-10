@@ -1,4 +1,5 @@
 import unittest
+import time
 from sudoku_generator import SudokuGenerator
 
 class TestSudokuGenerator(unittest.TestCase):
@@ -8,6 +9,8 @@ class TestSudokuGenerator(unittest.TestCase):
 
     def test_valid_puzzle(self):
         num_puzzles = 10  # Number of puzzles to generate and test
+
+        start_time = time.time()  # Start the timer
 
         for _ in range(num_puzzles):
             self.generator.generate_puzzle()
@@ -21,8 +24,13 @@ class TestSudokuGenerator(unittest.TestCase):
                     self.assertTrue(self.generator._SudokuGenerator__is_valid(grid, row, col, num))
 
                     grid[row][col] = num
+
+        end_time = time.time()  # Stop the timer
+        print(f"test_valid_puzzle: {end_time - start_time:.2f} seconds")
                 
     def test_is_valid_methods(self):
+        start_time = time.time()  # Start the timer
+
         # Fully solved Sudoku grid
         solved_grid = [
             [5, 3, 4, 6, 7, 8, 9, 1, 2],
@@ -72,6 +80,9 @@ class TestSudokuGenerator(unittest.TestCase):
                                 self.assertFalse(self.generator._SudokuGenerator__is_valid(grid, row, col, i))
 
                         self.assertTrue(self.generator._SudokuGenerator__is_valid(grid, row, col, 1))
+
+        end_time = time.time()  # Stop the timer
+        print(f"test_is_valid_methods: {end_time - start_time:.2f} seconds")
 
 if __name__ == '__main__':
     unittest.main()
