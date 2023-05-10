@@ -5,7 +5,7 @@ from sudoku_generator import SudokuGenerator
 class TestSudokuGenerator(unittest.TestCase):
 
     HINTS = 29 # Number of hints in each puzzle
-    NUM_PUZZLES = 10 # Number of puzzles to generate and test
+    NUM_PUZZLES = 100 # Number of puzzles to generate and test
 
     def setUp(self):
         self.generator = SudokuGenerator()
