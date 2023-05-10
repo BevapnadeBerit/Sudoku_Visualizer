@@ -9,7 +9,7 @@ BOX_OUTLINE = 2
 # All sizes must be even
 SQUARE_SIZE = 60
 BOX_SIZE = 3 * SQUARE_SIZE + 2 * BOX_OUTLINE
-GRID_SIZE = 3 * BOX_SIZE + 2 * GRID_OUTLINE
+GRID_SIDE = 3 * BOX_SIZE + 2 * GRID_OUTLINE
 
 
 class Grid(pygame.sprite.Sprite):
@@ -31,7 +31,7 @@ class Grid(pygame.sprite.Sprite):
 
         self.pos = (int(screen_size[0] / 2), int(screen_size[1] / 2))
 
-        self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
+        self.image = pygame.Surface((GRID_SIDE, GRID_SIDE))
         self.image.fill(get_color("grid"))
         self.rect = self.image.get_rect()
         self.rect.center = self.pos

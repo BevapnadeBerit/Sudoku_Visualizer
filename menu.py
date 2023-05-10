@@ -20,7 +20,7 @@ class Menu(Room):
 
         middle_x = int(screen_size[0]/2)
         play_button_y = int(screen_size[1]/2)
-        title_offset_y = BIG_BUTTON_SIZE[1]/2 + TITLE_SIZE[1]/2 + 20
+        title_offset_y = BIG_BUTTON_SIZE[1]/2 + TITLE_SIZE[1]/2 + 40
         settings_button_offset_y = BIG_BUTTON_SIZE[1] + 20
         selection_offset_x = int(BIG_BUTTON_SIZE[0]/2 + 40)
         back_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 40)
@@ -35,7 +35,7 @@ class Menu(Room):
         }
 
         self.objects = {
-            "title": Image(self.objects_pos["title"], TITLE_SIZE, "sudoku_title.png", self.sprite_groups["menu_ui"]),
+            "title": Image(self.objects_pos["title"], TITLE_SIZE, "sudoku.png", self.sprite_groups["menu_ui"]),
             "play": PlayButton(self.objects_pos["play"], self, self.sprite_groups),
             "settings": SettingsButton(self.objects_pos["settings"], self, self.sprite_groups),
             "manual": None,
@@ -70,11 +70,8 @@ class PlayButton(MenuButton):
         """
         Call the menu to make new buttons and remove unwanted ones
         """
-        self.menu.set_button("manual", ManualButton(self.menu.objects_pos.get("manual"), self.menu, self.sprite_groups))
-        self.menu.set_button("auto", AutoButton(self.menu.objects_pos.get("auto"), self.menu, self.sprite_groups))
-        self.menu.set_button("back", BackButton(self.menu.objects_pos.get("back"), self.menu, self.sprite_groups))
-        self.menu.kill_button("settings")
-        self.menu.kill_button("play")
+        post(GAME)
+        self.menu.close()
 
 
 class SettingsButton(MenuButton):
@@ -96,52 +93,6 @@ class SettingsButton(MenuButton):
         Call the menu to kill everything and go to settings.
         """
         post(SETTINGS)
-        self.menu.close()
-
-
-class ManualButton(MenuButton):
-    """
-    Button that opens game in MANUAL mode
-    """
-    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
-        """
-        Initializes a ManualButton object.
-        :param pos: screen position
-        :param menu: the menu object
-        :param sprite_groups: sprite group dict
-        """
-        super().__init__(pos, BIG_BUTTON_SIZE, "manual.png", sprite_groups)
-        self.menu = menu
-
-    def pressed(self):
-        """
-        Call the menu to kill everything and go to game in MANUAL mode.
-        """
-        post(MANUAL)
-        post(GAME)
-        self.menu.close()
-
-
-class AutoButton(MenuButton):
-    """
-    Button that opens game in AUTO mode
-    """
-    def __init__(self, pos: tuple[int, int], menu: Menu, sprite_groups: dict[str, pygame.sprite.Group]):
-        """
-        Initializes a AutoButton object.
-        :param pos: screen position
-        :param menu: the menu object
-        :param sprite_groups: sprite group dict
-        """
-        super().__init__(pos, BIG_BUTTON_SIZE, "auto.png", sprite_groups)
-        self.menu = menu
-
-    def pressed(self):
-        """
-        Call the menu to kill everything and go to game in AUTO mode.
-        """
-        post(AUTO)
-        post(GAME)
         self.menu.close()
 
 

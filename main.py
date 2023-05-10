@@ -6,15 +6,15 @@ from settings import *
 from game import *
 
 
-def button_collision(room: Menu | Settings, room_key: str):
+def button_collision(room: Menu | Settings | Game, group_key: str):
     """
     Checks if a button is pressed and activates the pressed method on it if true.
     :param room: Room to search in
-    :param room_key: sprite group to search in
+    :param group_key: sprite group to search in
     """
     center = None
     target_button = None
-    for sprite in room.sprite_groups[room_key]:
+    for sprite in room.sprite_groups[group_key]:
         if sprite.rect.collidepoint(pygame.mouse.get_pos()):
             center = sprite.rect.center
             break
@@ -113,21 +113,28 @@ while running:
                             select = None
                             select_value = None
 
-                        elif event.key is not pygame.K_f:
+                        else:
                             select.set_value(select_value)
                             select.set_background(select_color)
                             select = None
                             select_value = None
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if select is None:
-                        pressed_square = square_collision(game.objects["grid"], pygame.mouse.get_pos())
-                        if pressed_square is not None:
-                            select = pressed_square
-                            select_value = pressed_square.value
-                            select_color = pressed_square.background.color
-                            select.set_value(-1)
-                            select.set_background(get_color("blue"))
+                    if select:
+                        select.set_value(select_value)
+                        select.set_background(select_color)
+                        select = None
+                        select_value = None
+
+                    pressed_square = square_collision(game.objects["grid"], pygame.mouse.get_pos())
+                    if pressed_square is not None:
+                        select = pressed_square
+                        select_value = pressed_square.value
+                        select_color = pressed_square.background.color
+                        select.set_value(-1)
+                        select.set_background(get_color("blue"))
+                    else:
+                        button_collision(game, "game_ui")
             else:  # AUTO
                 pass
 

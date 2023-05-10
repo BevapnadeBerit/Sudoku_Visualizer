@@ -25,15 +25,25 @@ class Game(Room):
             "square_background": pygame.sprite.Group(),
         }
 
-        middle_x = int(screen_size[0] / 2)
-        middle_y = int(screen_size[1] / 2)
+        middle_x = int(screen_size[0]/2)
+        middle_y = int(screen_size[1]/2)
+        sidebar_offset_x = int(GRID_SIDE/2 + BIG_BUTTON_SIZE[0]/2 + 20)
+        button_space_y = 20 + BIG_BUTTON_SIZE[1]
 
         self.objects_pos = {
-            "grid": (middle_x, middle_y)
+            "grid": (middle_x, middle_y),
+            "generate": (middle_x + sidebar_offset_x, middle_y - int(1.5*button_space_y)),
+            "solve": (middle_x + sidebar_offset_x, middle_y - int(0.5*button_space_y)),
+            "clear": (middle_x + sidebar_offset_x, middle_y + int(0.5*button_space_y)),
+            "reset": (middle_x + sidebar_offset_x, middle_y + int(1.5*button_space_y)),
         }
 
         self.objects = {
             "grid": Grid(screen_size, 3, 3, 3, 3, self.sprite_groups),
+            "generate": GenerateButton(self.objects_pos["generate"], self, self.sprite_groups),
+            "solve": SolveButton(self.objects_pos["solve"], self, self.sprite_groups),
+            "clear": ClearButton(self.objects_pos["clear"], self, self.sprite_groups),
+            "reset": ResetButton(self.objects_pos["reset"], self, self.sprite_groups),
         }
         self.sudoku = Sudoku(self.objects["grid"], self.objects_pos["grid"])
 
@@ -63,7 +73,7 @@ class GenerateButton(GameButton):
         :param game: game object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(pos, BIG_BUTTON_SIZE, "", sprite_groups)  # <-- Insert image
+        super().__init__(pos, BIG_BUTTON_SIZE, "generate.png", sprite_groups)  # <-- Insert image
         self.game = game
         self.sprite_groups = sprite_groups
 
@@ -82,7 +92,7 @@ class SolveButton(GameButton):
         :param game: game object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(pos, BIG_BUTTON_SIZE, "", sprite_groups)  # <-- Insert image
+        super().__init__(pos, BIG_BUTTON_SIZE, "solve.png", sprite_groups)  # <-- Insert image
         self.game = game
         self.sprite_groups = sprite_groups
 
@@ -102,7 +112,7 @@ class ClearButton(GameButton):
         :param game: game object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(pos, BIG_BUTTON_SIZE, "", sprite_groups)  # <-- Insert image
+        super().__init__(pos, BIG_BUTTON_SIZE, "clear.png", sprite_groups)  # <-- Insert image
         self.game = game
         self.sprite_groups = sprite_groups
 
@@ -122,7 +132,7 @@ class ResetButton(GameButton):
         :param game: game object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(pos, BIG_BUTTON_SIZE, "", sprite_groups)  # <-- Insert image
+        super().__init__(pos, BIG_BUTTON_SIZE, "reset.png", sprite_groups)  # <-- Insert image
         self.game = game
         self.sprite_groups = sprite_groups
 
