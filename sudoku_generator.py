@@ -88,6 +88,7 @@ class SudokuGenerator:
     def __remove_numbers(self, hints: int) -> bool:
         remaining_positions = {(row, col) for row in range(9) for col in range(9)}
         attempted_positions = set()
+        original_grid = [row.copy() for row in self.grid]
 
         while len(remaining_positions) > hints:
             position = random.choice(list(remaining_positions))
@@ -106,7 +107,10 @@ class SudokuGenerator:
                 attempted_positions.add(position)
 
             if len(attempted_positions) == len(remaining_positions):
+                # Reset remaining_positions and revert to the original grid
+                remaining_positions = {(row, col) for row in range(9) for col in range(9)}
                 attempted_positions.clear()
+                self.grid = [row.copy() for row in original_grid]
 
         return True
 
