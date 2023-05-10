@@ -6,10 +6,10 @@ class SudokuGenerator:
     def __init__(self):
         self.grid = [[-1 for _ in range(9)] for _ in range(9)]
 
-    def generate_puzzle(self):
+    def generate_puzzle(self) -> None:
         self.__generate_random_diagonal()
 
-    def __solve(self, grid):
+    def __solve(self, grid: list[list[int]]) -> bool:
         row, col = self.__find_empty(grid)
 
         if row == -1 or col == -1:
@@ -27,7 +27,7 @@ class SudokuGenerator:
 
         return False
     
-    def __generate_random_diagonal(self): #Completely new puzzle, with three boxes filled in on the diagonal
+    def __generate_random_diagonal(self) -> bool: #Completely new puzzle, with three boxes filled in on the diagonal
         self.__resetGrid()
 
         num_range = list(range(1, 10))
@@ -53,7 +53,7 @@ class SudokuGenerator:
 
         return self.__fill_in_after_diagonal()
 
-    def __fill_in_after_diagonal(self): # Finish generating board after the diagonal boxes.
+    def __fill_in_after_diagonal(self) -> bool: # Finish generating board after the diagonal boxes.
         for row in range(len(self.grid)):
             for col in range(len(self.grid[row])):
                 if self.grid[row][col] == -1:
@@ -70,38 +70,38 @@ class SudokuGenerator:
 
         return False
 
-    def __resetGrid(self):
+    def __resetGrid(self) -> None:
         self.grid = [[-1 for _ in range(9)] for _ in range(9)]
 
-    def __find_empty(self, grid):
+    def __find_empty(self, grid: list[list[int]]) -> tuple[int, int]:
         for row in range(9):
             for col in range(9):
                 if grid[row][col] == -1:
                     return row, col
         return -1, -1
 
-    def __is_valid(self, grid, row, col, num):
+    def __is_valid(self, grid: list[list[int]], row: int, col: int, num: int) -> bool:
         return not self.__in_row(grid, row, num) and \
                not self.__in_col(grid, col, num) and \
                not self.__in_box(grid, row - row % 3, col - col % 3, num)
 
-    def __in_row(self, grid, row, num):
+    def __in_row(self, grid: list[list[int]], row: int, num: int) -> bool:
         return num in grid[row]
 
-    def __in_col(self, grid, col, num):
+    def __in_col(self, grid: list[list[int]], col: int, num: int) -> bool:
         return num in [grid[row][col] for row in range(9)]
 
-    def __in_box(self, grid, start_row, start_col, num):
+    def __in_box(self, grid: list[list[int]], start_row: int, start_col: int, num: int) -> bool:
         for row in range(3):
             for col in range(3):
                 if grid[row + start_row][col + start_col] == num:
                     return True
         return False
 
-    def __format_cell(self, value):
+    def __format_cell(self, value: int) -> str:
         return str(value) if value != -1 else ' '
 
-    def print_grid(self, grid):
+    def print_grid(self, grid: list[list[int]]) -> None:
         for row in range(9):
             if row % 3 == 0 and row != 0:
                 print('-' * 19)
