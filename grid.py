@@ -17,7 +17,7 @@ class Grid(pygame.sprite.Sprite):
     A grid containing a 3x3 2d array of boxes.
     """
 
-    def __init__(self, screen_size: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int):
+    def __init__(self, screen_size: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a Grid object.
         :param screen_size: screen position
@@ -26,13 +26,7 @@ class Grid(pygame.sprite.Sprite):
         :param v_squares: amount of squares in a box vertically
         :param h_squares: amount of squares in a box horizontally
         """
-        self.sprite_groups = {
-            "grid": pygame.sprite.Group(),
-            "box": pygame.sprite.Group(),
-            "square": pygame.sprite.Group(),
-            "number": pygame.sprite.Group(),
-            "square_background": pygame.sprite.Group(),
-        }
+        self.sprite_groups = sprite_groups
         super().__init__(self.sprite_groups["grid"])
 
         self.pos = (int(screen_size[0] / 2), int(screen_size[1] / 2))

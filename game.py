@@ -33,7 +33,7 @@ class Game(Room):
         }
 
         self.objects = {
-            "grid": Grid(screen_size, 3, 3, 3, 3),
+            "grid": Grid(screen_size, 3, 3, 3, 3, self.sprite_groups),
         }
         self.sudoku = Sudoku(self.objects["grid"], self.objects_pos["grid"])
 

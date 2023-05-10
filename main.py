@@ -3,6 +3,7 @@ from grid import *
 from helper_utils import *
 from menu import *
 from settings import *
+from game import *
 
 
 def button_collision(room: Menu | Settings, room_key: str):
@@ -44,7 +45,7 @@ running = True
 
 menu = None
 settings = None
-grid = None
+game = None
 
 select = None
 select_value = None
@@ -63,21 +64,21 @@ while running:
         elif event.type == MENU:
             menu = Menu(SCREENSIZE)
             settings = None
-            grid = None
+            game = None
             STATE = "MENU"
             continue
 
         elif event.type == SETTINGS:
             menu = None
             settings = Settings(SCREENSIZE)
-            grid = None
+            game = None
             STATE = "SETTINGS"
             continue
 
         elif event.type == GAME:
             menu = None
             settings = None
-            grid = Grid(SCREENSIZE, 3, 3, 3, 3)
+            game = Game(SCREENSIZE)
             STATE = "GAME"
             continue
 
@@ -120,7 +121,7 @@ while running:
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if select is None:
-                        pressed_square = square_collision(grid, pygame.mouse.get_pos())
+                        pressed_square = square_collision(game.objects["grid"], pygame.mouse.get_pos())
                         if pressed_square is not None:
                             select = pressed_square
                             select_value = pressed_square.value
@@ -145,7 +146,7 @@ while running:
     elif STATE == "SETTINGS":
         settings.draw(screen)
     elif STATE == "GAME":
-        grid.draw_grid(screen)
+        game.draw(screen)
 
     pygame.display.flip()
     clock.tick(FPS)
