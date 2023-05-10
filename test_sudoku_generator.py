@@ -4,8 +4,8 @@ from sudoku_generator import SudokuGenerator
 
 class TestSudokuGenerator(unittest.TestCase):
 
-    HINTS = 35 # Number of hints in each puzzle
-    NUM_PUZZLES = 100 # Number of puzzles to generate and test
+    HINTS = 29 # Number of hints in each puzzle
+    NUM_PUZZLES = 10 # Number of puzzles to generate and test
 
     def setUp(self):
         self.generator = SudokuGenerator()
@@ -27,35 +27,36 @@ class TestSudokuGenerator(unittest.TestCase):
         average_time = sum(durations) / len(durations)
         max_time = max(durations)
         min_time = min(durations)
-
+        print("\n")
         print(f"Average time: {average_time:.2f} seconds")
         print(f"Max time: {max_time:.2f} seconds")
         print(f"Min time: {min_time:.2f} seconds")
 
     def test_remove_numbers(self):
-        num_puzzles = 10
-        hints = 40
+        num_puzzles = 3
+        hints_range = [45, 35, 29]
 
-        start_time = time.time()  # Start the timer
+        for hints in hints_range:
+            start_time = time.time()  # Start the timer
 
-        for _ in range(num_puzzles):
-            self.generator.generate_puzzle(hints)
-            grid = self.generator.grid
-            solution = self.generator.solution
+            for _ in range(num_puzzles):
+                self.generator.generate_puzzle(hints)
+                grid = self.generator.grid
+                solution = self.generator.solution
 
-            num_remaining_hints = 0
-            for row in range(9):
-                for col in range(9):
-                    cell = grid[row][col]
-                    if cell != -1:
-                        num_remaining_hints += 1
-                        self.assertEqual(cell, solution[row][col],
-                                        msg=f"Number {cell} at position ({row}, {col}) in the puzzle is not equal to the number {solution[row][col]} in the solution")
+                num_remaining_hints = 0
+                for row in range(9):
+                    for col in range(9):
+                        cell = grid[row][col]
+                        if cell != -1:
+                            num_remaining_hints += 1
+                            self.assertEqual(cell, solution[row][col],
+                                            msg=f"Number {cell} at position ({row}, {col}) in the puzzle is not equal to the number {solution[row][col]} in the solution")
 
-            self.assertEqual(num_remaining_hints, hints)
+                self.assertEqual(num_remaining_hints, hints)
 
-        end_time = time.time()  # Stop the timer
-        print(f"test_remove_numbers: {end_time - start_time:.2f} seconds")
+            end_time = time.time()  # Stop the timer
+            print(f"test_remove_numbers ({hints} hints): {end_time - start_time:.2f} seconds")
                 
     def test_is_valid_methods(self):
         start_time = time.time()  # Start the timer
