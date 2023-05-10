@@ -69,20 +69,19 @@ class SudokuGenerator:
 
         return self.__fill_in_after_diagonal()
 
-    def __fill_in_after_diagonal(self) -> bool: # Finish generating board after the diagonal boxes.
-        for row in range(len(self.grid)):
-            for col in range(len(self.grid[row])):
-                if self.grid[row][col] == -1:
-                    num = random.randint(1, 9)
+    def __fill_in_after_diagonal(self) -> bool:
+        row, col = self.__find_empty(self.grid)
+        if row == -1 or col == -1:
+            return True
 
-                    if self.__is_valid(self.grid, row, col, num):
-                        self.grid[row][col] = num
+        for num in range(1, 10):
+            if self.__is_valid(self.grid, row, col, num):
+                self.grid[row][col] = num
 
-                        if self.__solve(self.grid):
-                            self.__fill_in_after_diagonal()
-                            return True
+                if self.__fill_in_after_diagonal():
+                    return True
 
-                        self.grid[row][col] = -1
+                self.grid[row][col] = -1
 
         return False
     
