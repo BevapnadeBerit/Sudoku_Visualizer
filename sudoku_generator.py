@@ -7,10 +7,10 @@ class SudokuGenerator:
         self.grid = [[-1 for _ in range(9)] for _ in range(9)]
         self.solution = None
 
-    def generate_puzzle(self) -> None:
+    def generate_puzzle(self, hints: int) -> None:
         self.__generate_random_diagonal()
         self.solution = [row.copy() for row in self.grid]
-        self.__remove_numbers(30)
+        self.__remove_numbers(hints)
 
     def __solve(self, grid: list[list[int]]) -> bool:
         row, col = self.__find_empty(grid)
@@ -75,6 +75,7 @@ class SudokuGenerator:
     
     def __remove_numbers(self, hints: int) -> bool:
         remaining_positions = {(row, col) for row in range(9) for col in range(9)}
+        attempted_positions = set()
 
         while len(remaining_positions) > hints:
             position = random.choice(list(remaining_positions))
@@ -87,8 +88,13 @@ class SudokuGenerator:
 
             if solutions == 1:
                 remaining_positions.remove(position)
+                attempted_positions.clear()
             else:
                 self.grid[row][col] = temp_val
+                attempted_positions.add(position)
+
+            if len(attempted_positions) == len(remaining_positions):
+                attempted_positions.clear()
 
         return True
 
