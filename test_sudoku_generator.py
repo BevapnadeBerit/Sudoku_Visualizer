@@ -4,29 +4,42 @@ from sudoku_generator import SudokuGenerator
 
 class TestSudokuGenerator(unittest.TestCase):
 
+    HINTS = 40 # Number of hints in each puzzle
+    NUM_PUZZLES = 10 # Number of puzzles to generate and test
+
     def setUp(self):
         self.generator = SudokuGenerator()
 
     def test_valid_puzzle(self):
-        num_puzzles = 10  # Number of puzzles to generate and test
+        # num_puzzles = 1  # Number of puzzles to generate and test
 
         start_time = time.time()  # Start the timer
 
-        for _ in range(num_puzzles):
-            self.generator.generate_puzzle()
+        for _ in range(self.NUM_PUZZLES):
+            self.generator.generate_puzzle(self.HINTS)
             grid = self.generator.grid
 
-            for row in range(9):
-                for col in range(9):
-                    num = grid[row][col]
-                    grid[row][col] = -1
-                    
-                    self.assertTrue(self.generator._SudokuGenerator__is_valid(grid, row, col, num))
-
-                    grid[row][col] = num
+            self.assertTrue(self.generator._SudokuGenerator__is_valid_grid(grid),
+                            msg=f"Invalid grid:\n{self.generator._SudokuGenerator__grid_to_str(grid)}")
 
         end_time = time.time()  # Stop the timer
         print(f"test_valid_puzzle: {end_time - start_time:.2f} seconds")
+
+    def test_remove_numbers(self):
+        # num_puzzles = 1  # Number of puzzles to generate and test
+        # hints = 40  # Number of hints to remain in the puzzle
+
+        start_time = time.time()  # Start the timer
+
+        for _ in range(self.NUM_PUZZLES):
+            self.generator.generate_puzzle(self.HINTS)
+            grid = self.generator.grid
+
+            num_remaining_hints = sum(1 for row in grid for cell in row if cell != -1)
+            self.assertEqual(num_remaining_hints, self.HINTS)
+
+        end_time = time.time()  # Stop the timer
+        print(f"test_remove_numbers: {end_time - start_time:.2f} seconds")
                 
     def test_is_valid_methods(self):
         start_time = time.time()  # Start the timer
