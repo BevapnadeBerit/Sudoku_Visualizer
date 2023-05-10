@@ -30,6 +30,18 @@ class SudokuGenerator:
 
         return False
     
+    def __is_valid_grid(self, grid: list[list[int]]) -> bool:
+        for row in range(9):
+            for col in range(9):
+                num = grid[row][col]
+                if num != -1:
+                    grid[row][col] = -1
+                    if not self.__is_valid(grid, row, col, num):
+                        grid[row][col] = num
+                        return False
+                    grid[row][col] = num
+        return True
+    
     def __generate_random_diagonal(self) -> bool: #Completely new puzzle, with three boxes filled in on the diagonal
         self.__resetGrid()
 
@@ -149,8 +161,22 @@ class SudokuGenerator:
 
     def __format_cell(self, value: int) -> str:
         return str(value) if value != -1 else ' '
+    
+    def __grid_to_str(self, grid: list[list[int]]) -> str:
+        grid_str = []
+        for row in range(9):
+            if row % 3 == 0 and row != 0:
+                grid_str.append('-' * 19)
+            row_str = []
+            for col in range(9):
+                if col % 3 == 0 and col != 0:
+                    row_str.append('|')
+                cell = self.__format_cell(grid[row][col])
+                row_str.append(' ' + cell)
+            grid_str.append(''.join(row_str))
+        return '\n'.join(grid_str)
 
-    def print_grid(self, grid: list[list[int]]) -> None:
+    def __print_grid(self, grid: list[list[int]]) -> None:
         for row in range(9):
             if row % 3 == 0 and row != 0:
                 print('-' * 19)
@@ -165,7 +191,16 @@ class SudokuGenerator:
                 else:
                     print(' ' + cell, end='')
 
+    def print_puzzle(self) -> None:
+        print("Puzzle:")
+        self.__print_grid(self.grid)
+        
+    def print_solution(self) -> None:
+        print("Solution:")
+        self.__print_grid(self.solution)
+
 if __name__ == '__main__':
     generator = SudokuGenerator()
-    generator.generate_puzzle()
-    generator.print_grid(generator.grid)
+    generator.generate_puzzle(40)
+    generator.print_puzzle()
+    generator.print_solution()
