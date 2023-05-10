@@ -1,70 +1,47 @@
 import os
-
 import pygame
-
+from room import *
 from helper_utils import *
 
 
-class Settings:
+class Settings(Room):
     """
     The settings screen
     """
     def __init__(self, screen_size: tuple[int, int]):
         """
         Initializes a Menu object.
-        :param groups: sprite group dict
+        :param screen_size: width and height of screen
         """
+        super().__init__()
         self.sprite_groups = {
-            "menu": pygame.sprite.Group(),
-            "settings": pygame.sprite.Group(),
+            "settings_ui": pygame.sprite.Group(),
         }
         self.screen_size = screen_size
-        self.middle = int(screen_size[0]/2)
-        self.back_button_y = int(screen_size[1]/2 + 200)
-        self.screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
 
-        self.button_pos = {
-            "back": (self.middle, self.back_button_y),
-            "screen": (self.middle, self.back_button_y - self.screen_size_button_offset_y),
+        middle_x = int(screen_size[0]/2)
+        back_button_y = int(screen_size[1]/2 + 200)
+        screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
+
+        self.objects_pos = {
+            "back": (middle_x, back_button_y),
+            "screen": (middle_x, back_button_y - screen_size_button_offset_y),
         }
 
-        self.buttons = {
-            "back": BackButton(self.button_pos.get("back"), self, self.sprite_groups),
-            "screen": ScreenSizeButton(self.button_pos.get("screen"), self, self.sprite_groups)
+        self.objects = {
+            "back": BackButton(self.objects_pos.get("back"), self, self.sprite_groups),
+            "screen": ScreenSizeButton(self.objects_pos.get("screen"), self, self.sprite_groups)
         }
 
-    def draw_settings(self, surface: pygame.Surface):
-        draw(surface, "gray", self.sprite_groups, "settings")
-
-    def set_button(self, key: str, value):
+    def draw(self, surface: pygame.Surface):
         """
-        Remove a keypair and set it anew.
-        :param key: The key in the pair
-        :param value: The value in the pair
+        Draw the settings room
+        :param surface: The surface to draw onto
         """
-        self.buttons.pop(key)
-        self.buttons[key] = value
-
-    def kill_button(self, key: str):
-        """
-        Kill the object if not None and set its value in self.buttons to None
-        :param key: Key to the object
-        """
-        if self.buttons[key] is not None:
-            self.buttons[key].kill()
-            self.buttons[key] = None
-
-    def close(self):
-        """
-        Kill all non-None buttons in self.buttons
-        """
-        for key in [key for key in self.buttons.keys()]:
-            self.kill_button(key)
-            if key == "screen":
-                print("DESTROYED")
+        draw(surface, "gray", self.sprite_groups, "settings_ui")
 
 
-class BackButton(pygame.sprite.Sprite):
+class BackButton(SettingsButton):
     """
     Button that returns to menu
     """
@@ -74,19 +51,10 @@ class BackButton(pygame.sprite.Sprite):
         Initializes a BackButton object.
         :param pos: screen position
         :param settings: settings object
-        :param groups: sprite group dict
+        :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("settings"))
+        super().__init__(pos, SMALL_BUTTON_SIZE, "back.png", sprite_groups)
         self.settings = settings
-
-        file_path = os.path.join("images", "back.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, SMALL_BUTTON_SIZE)
-
-        self.image = pygame.Surface(SMALL_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
 
     def pressed(self):
         """
@@ -96,7 +64,7 @@ class BackButton(pygame.sprite.Sprite):
         self.settings.close()
 
 
-class ScreenSizeButton(pygame.sprite.Sprite):
+class ScreenSizeButton(SettingsButton):
     """
     Resizes the screen
     """
@@ -105,22 +73,14 @@ class ScreenSizeButton(pygame.sprite.Sprite):
         Initializes a ScreenSizeButton object.
         :param pos: screen position
         :param settings: settings object
-        :param groups: sprite group dict
+        :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("settings"))
         self.settings = settings
-
         if is_windowed(settings.screen_size):
-            file_path = os.path.join("images", "fullscreen.png")
+            filename = "fullscreen.png"
         else:
-            file_path = os.path.join("images", "windowed.png")
-        image = pygame.image.load(file_path).convert_alpha()
-        image = pygame.transform.scale(image, BIG_BUTTON_SIZE)
-
-        self.image = pygame.Surface(BIG_BUTTON_SIZE, pygame.SRCALPHA)
-        self.image.blit(image, (0, 0))
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
+            filename = "windowed.png"
+        super().__init__(pos, BIG_BUTTON_SIZE, filename, sprite_groups)
 
     def pressed(self):
         """

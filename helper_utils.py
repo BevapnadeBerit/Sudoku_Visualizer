@@ -1,3 +1,4 @@
+import os
 import pygame
 
 
@@ -14,6 +15,7 @@ GAME = pygame.USEREVENT + 4
 MANUAL = pygame.USEREVENT + 5
 AUTO = pygame.USEREVENT + 6
 
+TITLE_SIZE = (598, 223)
 BIG_BUTTON_SIZE = (300, 100)
 SMALL_BUTTON_SIZE = (150, 75)
 
@@ -47,7 +49,8 @@ def get_color(color: str) -> tuple[int, int, int] | None:
         return colors[color]
     else:
         return None
-    
+
+
 def draw(surface: pygame.Surface, color: str, sprite_groups: dict[str, pygame.sprite.Group], *group_keys: str):
     """
     Draws a number of sprite groups onto a Surface with a background of given color.
@@ -68,3 +71,19 @@ def post(event: int):
     :param event: event to post
     """
     pygame.event.post(pygame.event.Event(event))
+
+
+class Image(pygame.sprite.Sprite):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], image: str,
+                 group: pygame.sprite.Group):
+        super().__init__(group)
+
+        file_path = os.path.join("images", image)
+        image = pygame.image.load(file_path).convert_alpha()
+        image = pygame.transform.scale(image, size)
+
+        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.image.blit(image, (0, 0))
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
+

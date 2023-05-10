@@ -1,7 +1,6 @@
 import os
 import pygame
 from pygame import Vector2
-
 from helper_utils import *
 
 GRID_OUTLINE = 30
@@ -10,14 +9,15 @@ BOX_OUTLINE = 2
 # All sizes must be even
 SQUARE_SIZE = 60
 BOX_SIZE = 3 * SQUARE_SIZE + 2 * BOX_OUTLINE
-GRID_SIZE = 3 * BOX_SIZE + 2 * GRID_OUTLINE
+GRID_SIDE = 3 * BOX_SIZE + 2 * GRID_OUTLINE
 
 
 class Grid(pygame.sprite.Sprite):
     """
     A grid containing a 3x3 2d array of boxes.
     """
-    def __init__(self, screen_size: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int):
+
+    def __init__(self, screen_size: tuple[int, int], v_boxes: int, h_boxes: int, v_squares: int, h_squares: int, sprite_groups: dict[str, pygame.sprite.Group]):
         """
         Initializes a Grid object.
         :param screen_size: screen position
@@ -25,20 +25,13 @@ class Grid(pygame.sprite.Sprite):
         :param h_boxes: amount of boxes horizontally
         :param v_squares: amount of squares in a box vertically
         :param h_squares: amount of squares in a box horizontally
-        :param groups: sprite group dict
         """
-        self.sprite_groups = {
-            "grid": pygame.sprite.Group(),
-            "box": pygame.sprite.Group(),
-            "square": pygame.sprite.Group(),
-            "number": pygame.sprite.Group(),
-            "square_background": pygame.sprite.Group(),
-        }
-        super().__init__(self.sprite_groups.get("grid"))
-        
-        self.pos = (int(screen_size[0]/2), int(screen_size[1]/2))
+        self.sprite_groups = sprite_groups
+        super().__init__(self.sprite_groups["grid"])
 
-        self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
+        self.pos = (int(screen_size[0] / 2), int(screen_size[1] / 2))
+
+        self.image = pygame.Surface((GRID_SIDE, GRID_SIDE))
         self.image.fill(get_color("grid"))
         self.rect = self.image.get_rect()
         self.rect.center = self.pos
@@ -53,18 +46,19 @@ class Grid(pygame.sprite.Sprite):
 
     def draw_grid(self, surface: pygame.Surface):
         draw(surface, "white", self.sprite_groups,
-            "grid",
-            "box",
-            "square_background",
-            "square",
-            "number",
-            )
+             "grid",
+             "box",
+             "square_background",
+             "square",
+             "number",
+             )
 
 
 class Box(pygame.sprite.Sprite):
     """
     A box containing a 3x3 2d array of squares.
     """
+
     def __init__(self, box_pos: tuple[int, int], h_squares: int, v_squares: int, box_row: int, box_col: int,
                  sprite_groups: dict[str, pygame.sprite.Group]):
         """
@@ -74,9 +68,9 @@ class Box(pygame.sprite.Sprite):
         :param h_squares: amount of squares horizontally
         :param box_row: row of box
         :param box_col: column of box
-        :param groups: sprite group dict
+        :param sprite_groups: sprite group dict
         """
-        super().__init__(sprite_groups.get("box"))
+        super().__init__(sprite_groups["box"])
 
         self.image = pygame.Surface((BOX_SIZE, BOX_SIZE))
         self.image.fill(get_color("black"))
@@ -98,20 +92,21 @@ class Square(pygame.sprite.Sprite):
     """
     A square with a value which is represented by an instance of the Number class if in the range of 0-9.
     """
-    def __init__(self, square_pos: tuple[int, int], row, col, sprite_groups: dict[str, pygame.sprite.Group], 
+
+    def __init__(self, square_pos: tuple[int, int], row, col, sprite_groups: dict[str, pygame.sprite.Group],
                  value=-1):
         """
         Initializes a Square object.
         :param square_pos: screen position
         :param row: row of square in box
         :param col: column of square in box
-        :param groups: sprite group dict
+        :param sprite_groups: sprite group dict
         :param value: value of square
         """
-        super().__init__(sprite_groups.get("square"))
+        super().__init__(sprite_groups["square"])
 
-        self.number_sprites = sprite_groups.get("number")
-        self.background_sprites = sprite_groups.get("square_background")
+        self.number_sprites = sprite_groups["number"]
+        self.background_sprites = sprite_groups["square_background"]
 
         file_path = os.path.join("images", "square.png")
         image = pygame.image.load(file_path).convert_alpha()
@@ -137,7 +132,6 @@ class Square(pygame.sprite.Sprite):
         Sets the value of the Square.
         Updates the square Number.
         :param value: value of Square
-        :param groups: sprite group dict
         :return: None
         """
         self.value = value
@@ -168,7 +162,6 @@ class Square(pygame.sprite.Sprite):
         """
         Sets the background of the Square
         :param color: The color of the background
-        :param groups: The sprite group dict
         :return: None
         """
         if self.background is not None:
@@ -187,12 +180,13 @@ class Number(pygame.sprite.Sprite):
     """
     An image showing the content of related square.
     """
+
     def __init__(self, pos: tuple[int, int], value: int, number_sprites: pygame.sprite.Group):
         """
         Initializes a Number object.
         :param pos: screen position
         :param value: value of connected square
-        :param groups: sprite group dict
+        :param number_sprites: sprite group
         """
         super().__init__(number_sprites)
         if value not in range(1, 10):
@@ -213,12 +207,13 @@ class SquareBackground(pygame.sprite.Sprite):
     """
     Background color of square
     """
+
     def __init__(self, pos: tuple[int, int], color: tuple[int, int, int], background_sprites: pygame.sprite.Group):
         """
         Initializes a SquareBackground object.
         :param pos: screen position
         :param color: background color
-        :param groups: sprite group dict
+        :param background_sprites: sprite group
         """
         super().__init__(background_sprites)
         self.image = pygame.Surface((SQUARE_SIZE, SQUARE_SIZE))

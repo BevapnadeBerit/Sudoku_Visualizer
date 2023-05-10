@@ -3,27 +3,29 @@ from grid import *
 from helper_utils import *
 from menu import *
 from settings import *
+from game import *
 
 
-def button_collision(room: Menu | Settings, room_key: str):
+def button_collision(room: Menu | Settings | Game, group_key: str):
     """
     Checks if a button is pressed and activates the pressed method on it if true.
     :param room: Room to search in
-    :param room_key: sprite group to search in
+    :param group_key: sprite group to search in
     """
     center = None
     target_button = None
-    for sprite in room.sprite_groups[room_key]:
+    for sprite in room.sprite_groups[group_key]:
         if sprite.rect.collidepoint(pygame.mouse.get_pos()):
             center = sprite.rect.center
             break
     if center is not None:
-        for button in room.buttons.values():
+        for button in room.objects.values():
             if button is not None:
                 if button.rect.center == center:
                     target_button = button
                     break
         target_button.pressed()
+
 
 # States
 STATE = "MENU"
@@ -41,12 +43,10 @@ screen = pygame.display.set_mode(SCREENSIZE)
 clock = pygame.time.Clock()
 running = True
 
-# room objects
 menu = None
 settings = None
-grid = None
+game = None
 
-# selected square
 select = None
 select_value = None
 select_color = None
@@ -64,21 +64,21 @@ while running:
         elif event.type == MENU:
             menu = Menu(SCREENSIZE)
             settings = None
-            grid = None
+            game = None
             STATE = "MENU"
             continue
 
         elif event.type == SETTINGS:
             menu = None
             settings = Settings(SCREENSIZE)
-            grid = None
+            game = None
             STATE = "SETTINGS"
             continue
 
         elif event.type == GAME:
             menu = None
             settings = None
-            grid = Grid(SCREENSIZE, 3, 3, 3, 3)
+            game = Game(SCREENSIZE)
             STATE = "GAME"
             continue
 
@@ -89,10 +89,10 @@ while running:
 
         if STATE == "MENU":
             if event.type == pygame.MOUSEBUTTONDOWN:
-                button_collision(menu, "menu")
+                button_collision(menu, "menu_ui")
         elif STATE == "SETTINGS":
             if event.type == pygame.MOUSEBUTTONDOWN:
-                button_collision(settings, "settings")
+                button_collision(settings, "settings_ui")
         elif STATE == "GAME":
             if not AUTOMODE:
                 if event.type == pygame.KEYDOWN:
@@ -113,21 +113,28 @@ while running:
                             select = None
                             select_value = None
 
-                        elif event.key is not pygame.K_f:
+                        else:
                             select.set_value(select_value)
                             select.set_background(select_color)
                             select = None
                             select_value = None
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if select is None:
-                        pressed_square = square_collision(grid, pygame.mouse.get_pos())
-                        if pressed_square is not None:
-                            select = pressed_square
-                            select_value = pressed_square.value
-                            select_color = pressed_square.background.color
-                            select.set_value(-1)
-                            select.set_background(get_color("blue"))
+                    if select:
+                        select.set_value(select_value)
+                        select.set_background(select_color)
+                        select = None
+                        select_value = None
+
+                    pressed_square = square_collision(game.objects["grid"], pygame.mouse.get_pos())
+                    if pressed_square is not None:
+                        select = pressed_square
+                        select_value = pressed_square.value
+                        select_color = pressed_square.background.color
+                        select.set_value(-1)
+                        select.set_background(get_color("blue"))
+                    else:
+                        button_collision(game, "game_ui")
             else:  # AUTO
                 pass
 
@@ -140,18 +147,14 @@ while running:
             else:
                 pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
                 SCREENSIZE = (pygame.display.Info().current_w, pygame.display.Info().current_h)
-            print("CHANGE")
-            print(SCREENSIZE)
 
-    # Render
     if STATE == "MENU":
-        menu.draw_menu(screen)
+        menu.draw(screen)
     elif STATE == "SETTINGS":
-        settings.draw_settings(screen)
+        settings.draw(screen)
     elif STATE == "GAME":
-        grid.draw_grid(screen)
+        game.draw(screen)
 
-    # flip() the display to put your work on screen
     pygame.display.flip()
     clock.tick(FPS)
 pygame.quit()
