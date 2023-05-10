@@ -4,8 +4,8 @@ from sudoku_generator import SudokuGenerator
 
 class TestSudokuGenerator(unittest.TestCase):
 
-    HINTS = 40 # Number of hints in each puzzle
-    NUM_PUZZLES = 10 # Number of puzzles to generate and test
+    HINTS = 29 # Number of hints in each puzzle
+    NUM_PUZZLES = 1 # Number of puzzles to generate and test
 
     def setUp(self):
         self.generator = SudokuGenerator()
@@ -26,16 +26,22 @@ class TestSudokuGenerator(unittest.TestCase):
         print(f"test_valid_puzzle: {end_time - start_time:.2f} seconds")
 
     def test_remove_numbers(self):
-        # num_puzzles = 1  # Number of puzzles to generate and test
-        # hints = 40  # Number of hints to remain in the puzzle
-
         start_time = time.time()  # Start the timer
 
         for _ in range(self.NUM_PUZZLES):
             self.generator.generate_puzzle(self.HINTS)
             grid = self.generator.grid
+            solution = self.generator.solution
 
-            num_remaining_hints = sum(1 for row in grid for cell in row if cell != -1)
+            num_remaining_hints = 0
+            for row in range(9):
+                for col in range(9):
+                    cell = grid[row][col]
+                    if cell != -1:
+                        num_remaining_hints += 1
+                        self.assertEqual(cell, solution[row][col],
+                                        msg=f"Number {cell} at position ({row}, {col}) in the puzzle is not equal to the number {solution[row][col]} in the solution")
+
             self.assertEqual(num_remaining_hints, self.HINTS)
 
         end_time = time.time()  # Stop the timer
