@@ -88,10 +88,10 @@ while running:
 
         if STATE == "MENU":
             if event.type == pygame.MOUSEBUTTONDOWN:
-                button_collision(menu, "menu")
+                button_collision(menu, "menu_ui")
         elif STATE == "SETTINGS":
             if event.type == pygame.MOUSEBUTTONDOWN:
-                button_collision(settings, "settings")
+                button_collision(settings, "settings_ui")
         elif STATE == "GAME":
             if not AUTOMODE:
                 if event.type == pygame.KEYDOWN:

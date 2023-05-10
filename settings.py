@@ -1,6 +1,6 @@
 import os
 import pygame
-from room import Room, Button
+from room import *
 from helper_utils import *
 
 
@@ -15,17 +15,17 @@ class Settings(Room):
         """
         super().__init__()
         self.sprite_groups = {
-            "menu": pygame.sprite.Group(),
-            "settings": pygame.sprite.Group(),
+            "settings_ui": pygame.sprite.Group(),
         }
         self.screen_size = screen_size
-        self.middle = int(screen_size[0]/2)
-        self.back_button_y = int(screen_size[1]/2 + 200)
-        self.screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
+
+        middle_x = int(screen_size[0]/2)
+        back_button_y = int(screen_size[1]/2 + 200)
+        screen_size_button_offset_y = int(BIG_BUTTON_SIZE[1]/2 + SMALL_BUTTON_SIZE[1]/2 + 20)
 
         self.objects_pos = {
-            "back": (self.middle, self.back_button_y),
-            "screen": (self.middle, self.back_button_y - self.screen_size_button_offset_y),
+            "back": (middle_x, back_button_y),
+            "screen": (middle_x, back_button_y - screen_size_button_offset_y),
         }
 
         self.objects = {
@@ -34,10 +34,14 @@ class Settings(Room):
         }
 
     def draw(self, surface: pygame.Surface):
-        draw(surface, "gray", self.sprite_groups, "settings")
+        """
+        Draw the settings room
+        :param surface: The surface to draw onto
+        """
+        draw(surface, "gray", self.sprite_groups, "settings_ui")
 
 
-class BackButton(Button):
+class BackButton(SettingsButton):
     """
     Button that returns to menu
     """
@@ -49,7 +53,7 @@ class BackButton(Button):
         :param settings: settings object
         :param sprite_groups: sprite group dict
         """
-        super().__init__(pos, SMALL_BUTTON_SIZE, "back.png", "settings", sprite_groups)
+        super().__init__(pos, SMALL_BUTTON_SIZE, "back.png", sprite_groups)
         self.settings = settings
 
     def pressed(self):
@@ -60,7 +64,7 @@ class BackButton(Button):
         self.settings.close()
 
 
-class ScreenSizeButton(Button):
+class ScreenSizeButton(SettingsButton):
     """
     Resizes the screen
     """
@@ -76,7 +80,7 @@ class ScreenSizeButton(Button):
             filename = "fullscreen.png"
         else:
             filename = "windowed.png"
-        super().__init__(pos, BIG_BUTTON_SIZE, filename, "settings",sprite_groups)
+        super().__init__(pos, BIG_BUTTON_SIZE, filename, sprite_groups)
 
     def pressed(self):
         """
