@@ -30,9 +30,8 @@ class SudokuGenerator:
             return True
 
         for num in range(1, 10):
-            random_num = random.randint(1, 9)
-            if self.__is_valid(grid, row, col, random_num):
-                grid[row][col] = random_num
+            if self.__is_valid(grid, row, col, num):
+                grid[row][col] = num
 
                 if self.__solve(grid):
                     return True
