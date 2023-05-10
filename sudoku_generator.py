@@ -87,7 +87,6 @@ class SudokuGenerator:
     
     def __remove_numbers(self, hints: int) -> bool:
         remaining_positions = {(row, col) for row in range(9) for col in range(9)}
-        attempted_positions_count = 0
         original_grid = [row.copy() for row in self.grid]
 
         restart_count = 0
@@ -102,15 +101,14 @@ class SudokuGenerator:
 
             if solutions == 1:
                 remaining_positions.remove(position)
-                attempted_positions_count = 0
             else:
                 self.grid[row][col] = temp_val
-                attempted_positions_count += 1
 
-            if attempted_positions_count == len(remaining_positions):
-                # Reset remaining_positions and revert to the original grid
+            if len(remaining_positions) == hints:
+                break
+
+            if len(remaining_positions) == 0:
                 remaining_positions = {(row, col) for row in range(9) for col in range(9)}
-                attempted_positions_count = 0
                 self.grid = [row.copy() for row in original_grid]
                 restart_count += 1
 
