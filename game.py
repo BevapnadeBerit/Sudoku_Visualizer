@@ -10,7 +10,7 @@ class Game(Room):
     The game room
     """
 
-    def __init__(self, screen_size: tuple[int, int]):
+    def __init__(self, screen_size: tuple[int, int], screen: pygame.Surface):
         """
         Initializes a Game object.
         :param screen_size: width and height of screen
@@ -51,7 +51,7 @@ class Game(Room):
             "medium": MediumButton(self.objects_pos["medium"], self, self.sprite_groups),
             "hard": HardButton(self.objects_pos["hard"], self, self.sprite_groups),
         }
-        self.sudoku = Sudoku(self.objects["grid"], self.objects_pos["grid"])
+        self.sudoku = Sudoku(self.objects["grid"], self.objects_pos["grid"], self.sprite_groups, screen)
 
     def draw(self, surface: pygame.Surface):
         """
