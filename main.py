@@ -37,6 +37,7 @@ SCREENSIZE = (WIDTH, HEIGHT)
 
 # key-binds
 KEY_QUIT = pygame.K_q
+KEY_MENU = pygame.K_ESCAPE
 
 # pygame setup
 pygame.init()
@@ -57,10 +58,12 @@ post(MENU)
 while running:
     for event in pygame.event.get():
 
-        # Always
         if event.type == pygame.KEYDOWN:
             if event.key == KEY_QUIT:
                 post(pygame.QUIT)
+            if event.key == KEY_MENU:
+                if STATE != "MENU":
+                    post(MENU)
 
         elif event.type == MENU:
             menu = Menu(SCREENSIZE)
