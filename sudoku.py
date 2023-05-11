@@ -95,7 +95,7 @@ class Sudoku:
 
             # If the number is invalid or the recursive call to solve failed, remove the number
             self.remove_number(square.row, square.col)
-            self.update_screen()
+            #self.update_screen()
 
         return False
 
@@ -133,8 +133,8 @@ class Sudoku:
         """
         if square.static:
             return False
-        if value not in range(1, 10):
-            return False
+        #if value not in range(1, 10):
+           # return False
 
         """if force or self.is_number_valid(square.row, square.col, value):
             if square.value == -1:  # Decrease the number of empty squares only if the square was empty
