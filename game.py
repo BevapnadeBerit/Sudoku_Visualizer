@@ -32,10 +32,11 @@ class Game(Room):
 
         self.objects_pos = {
             "grid": (middle_x, middle_y),
-            "generate": (middle_x + sidebar_offset_x, middle_y - int(1.5 * button_space_y)),
-            "solve": (middle_x + sidebar_offset_x, middle_y - int(0.5 * button_space_y)),
-            "clear": (middle_x + sidebar_offset_x, middle_y + int(0.5 * button_space_y)),
-            "reset": (middle_x + sidebar_offset_x, middle_y + int(1.5 * button_space_y)),
+            "generate": (middle_x + sidebar_offset_x, middle_y - int(2 * button_space_y)),
+            "solve": (middle_x + sidebar_offset_x, middle_y - int(1 * button_space_y)),
+            "clear": (middle_x + sidebar_offset_x, middle_y + int(0 * button_space_y)),
+            "reset": (middle_x + sidebar_offset_x, middle_y + int(1 * button_space_y)),
+            "demo": (middle_x + sidebar_offset_x, middle_y + int(2 * button_space_y)),
             "easy": (middle_x - sidebar_offset_x, middle_y - int(button_space_y)),
             "medium": (middle_x - sidebar_offset_x, middle_y),
             "hard": (middle_x - sidebar_offset_x, middle_y + int(button_space_y)),
@@ -47,6 +48,7 @@ class Game(Room):
             "solve": SolveButton(self.objects_pos["solve"], self, self.sprite_groups),
             "clear": ClearButton(self.objects_pos["clear"], self, self.sprite_groups),
             "reset": ResetButton(self.objects_pos["reset"], self, self.sprite_groups),
+            "demo": DemoButton(self.objects_pos["demo"], self, self.sprite_groups),
             "easy": EasyButton(self.objects_pos["easy"], self, self.sprite_groups),
             "medium": MediumButton(self.objects_pos["medium"], self, self.sprite_groups),
             "hard": HardButton(self.objects_pos["hard"], self, self.sprite_groups),
@@ -266,3 +268,26 @@ class HardButton(GameButton):
         if self.background is not None:
             self.background.kill()
             self.background = None
+
+
+class DemoButton(GameButton):
+    """
+    Button that starts a demo preset solution sequence
+    """
+    def __init__(self, pos: tuple[int, int], game: Game, sprite_groups: dict[str, pygame.sprite.Group]):
+        """
+        Initializes a DemoButton object.
+        :param pos: screen position
+        :param game: the menu object
+        :param sprite_groups: sprite group dict
+        """
+        super().__init__(pos, BIG_BUTTON_SIZE, "demo.png", sprite_groups)
+        self.game = game
+        self.sprite_groups = sprite_groups
+
+    def pressed(self):
+        """
+        Call the menu to make new buttons and remove unwanted ones
+        """
+        self.game.sudoku.demo()
+
