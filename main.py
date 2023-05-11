@@ -137,30 +137,30 @@ while running:
                             pygame.K_8,
                             pygame.K_9,
                         ]:
-                            select.set_value(value_of_number_key(event.key))
+                            game.sudoku.manually_insert_number(select, value_of_number_key(event.key))
                             select.set_background(select_color)
                             select = None
                             select_value = None
 
                         else:
-                            select.set_value(select_value)
+                            game.sudoku.manually_insert_number(select, select_value)
                             select.set_background(select_color)
                             select = None
                             select_value = None
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if select:
-                        select.set_value(select_value)
+                        game.sudoku.manually_insert_number(select, select_value)
                         select.set_background(select_color)
                         select = None
                         select_value = None
 
                     pressed_square = square_collision(game.objects["grid"], pygame.mouse.get_pos())
-                    if pressed_square is not None:
+                    if pressed_square is not None and pressed_square.static is False:
                         select = pressed_square
                         select_value = pressed_square.value
                         select_color = pressed_square.background.color
-                        select.set_value(-1)
+                        game.sudoku.manually_insert_number(select, -1)
                         select.set_background(get_color("blue"))
                     else:
                         button_collision(game, "game_ui")
