@@ -217,7 +217,6 @@ class SquareBackground(pygame.sprite.Sprite):
     """
     Background color of square
     """
-
     def __init__(self, pos: tuple[int, int], color: tuple[int, int, int], background_sprites: pygame.sprite.Group):
         """
         Initializes a SquareBackground object.

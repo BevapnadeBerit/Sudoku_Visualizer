@@ -83,12 +83,12 @@ while running:
             menu = None
             settings = None
             game = Game(SCREENSIZE, screen)
+            game.objects["easy"].pressed()
             STATE = "GAME"
             continue
         elif event.type == DEMO:
             menu = None
             settings = None
-            # game = Demo(SCREENSIZE)
             STATE = "GAME"
 
         elif event.type == MANUAL:
@@ -97,16 +97,12 @@ while running:
             AUTOMODE = True
 
         elif event.type == GENERATE:
-            print("GENERATE")
             game.sudoku.generate_puzzle(DIFFICULTY)
         elif event.type == SOLVE:
-            print("SOLVE")
             game.sudoku.solve()
         elif event.type == CLEAR:
-            print("CLEAR")
             game.sudoku.clear()
         elif event.type == RESET:
-            print("RESET")
             game.sudoku.reset()
 
         elif event.type == EASY:
@@ -164,8 +160,6 @@ while running:
                         select.set_background(get_color("blue"))
                     else:
                         button_collision(game, "game_ui")
-            else:  # AUTO
-                pass
 
         if event.type == pygame.QUIT:
             running = False

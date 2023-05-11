@@ -9,6 +9,7 @@ WIDTH = 1280
 HEIGHT = 720
 FPS = 60
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -19,7 +20,7 @@ def main():
     grid_sprites = pygame.sprite.Group()
 
     # Create a grid and Sudoku instance
-    grid_pos = (int(WIDTH/2), int(HEIGHT/2))
+    grid_pos = (int(WIDTH / 2), int(HEIGHT / 2))
     grid = Grid(grid_pos, 3, 3, 3, 3, grid_sprites)
     sudoku = Sudoku(grid, grid_pos)
 
@@ -121,7 +122,7 @@ def main():
         if not tests_done:
             test_insert_remove_all()
             test_validity()
-            
+
             """sudoku.insert_number(8, 6, 1)
             update_screen(screen, grid_sprites)
             sudoku.insert_number(0, 1, 1)
@@ -136,6 +137,7 @@ def main():
         clock.tick(FPS)
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()

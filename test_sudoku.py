@@ -1,14 +1,16 @@
-#Generated with ChatGPT
+# Generated with ChatGPT
 
 import unittest
 from grid import Grid, Square, Box
 from sudoku import Sudoku
 
 import pygame
+
 pygame.init()
 pygame.display.set_mode((1, 1))
 
 import random
+
 
 class TestSudoku(unittest.TestCase):
 
@@ -18,18 +20,18 @@ class TestSudoku(unittest.TestCase):
         self.sudoku = Sudoku(self.grid, grid_pos)
 
     def test_insert_number_full_grid(self):
-            # Insert random values in all squares
-            for row in range(9):
-                for col in range(9):
-                    value = random.randint(1, 9)
-                    self.sudoku.insert_number(row, col, value)
-                    square = self.sudoku._get_square(row, col)
-                    # Check if the empty_squares count is decreased correctly
-                    if square.value == -1:
-                        expected_empty_squares = self.sudoku.empty_squares + 1
-                    else:
-                        expected_empty_squares = self.sudoku.empty_squares
-                    self.assertEqual(self.sudoku.empty_squares, expected_empty_squares)
+        # Insert random values in all squares
+        for row in range(9):
+            for col in range(9):
+                value = random.randint(1, 9)
+                self.sudoku.insert_number(row, col, value)
+                square = self.sudoku._get_square(row, col)
+                # Check if the empty_squares count is decreased correctly
+                if square.value == -1:
+                    expected_empty_squares = self.sudoku.empty_squares + 1
+                else:
+                    expected_empty_squares = self.sudoku.empty_squares
+                self.assertEqual(self.sudoku.empty_squares, expected_empty_squares)
 
     def test_insert_out_of_range_numbers(self):
         for num in range(-10, 20):
@@ -97,13 +99,13 @@ class TestSudoku(unittest.TestCase):
         self.assertFalse(self.sudoku.is_number_valid(0, 1, 1))  # Same row
         self.assertFalse(self.sudoku.is_number_valid(1, 0, 1))  # Same column
         self.assertFalse(self.sudoku.is_number_valid(1, 1, 1))  # Same box
-        self.assertTrue(self.sudoku.is_number_valid(0, 1, 2))   # Valid placement
+        self.assertTrue(self.sudoku.is_number_valid(0, 1, 2))  # Valid placement
 
         self.sudoku.insert_number(3, 3, 1)
         self.assertFalse(self.sudoku.is_number_valid(3, 4, 1))  # Same row
         self.assertFalse(self.sudoku.is_number_valid(4, 3, 1))  # Same column
         self.assertFalse(self.sudoku.is_number_valid(4, 4, 1))  # Same box
-        self.assertTrue(self.sudoku.is_number_valid(3, 4, 2))   # Valid placement
+        self.assertTrue(self.sudoku.is_number_valid(3, 4, 2))  # Valid placement
 
     def test_value_in_row_col(self):
         for num in range(1, 10):
@@ -241,6 +243,6 @@ class TestSudoku(unittest.TestCase):
         # Ensure that the Sudoku puzzle is solved
         self.assertTrue(self.sudoku.solved)
 
+
 if __name__ == "__main__":
     unittest.main()
-

@@ -2,10 +2,10 @@ import unittest
 import time
 from sudoku_generator import SudokuGenerator
 
-class TestSudokuGenerator(unittest.TestCase):
 
-    HINTS = 45 # Number of hints in each puzzle
-    NUM_PUZZLES = 5 # Number of puzzles to generate and test
+class TestSudokuGenerator(unittest.TestCase):
+    HINTS = 45  # Number of hints in each puzzle
+    NUM_PUZZLES = 5  # Number of puzzles to generate and test
 
     def setUp(self):
         self.generator = SudokuGenerator()
@@ -64,13 +64,13 @@ class TestSudokuGenerator(unittest.TestCase):
                         if cell != -1:
                             num_remaining_hints += 1
                             self.assertEqual(cell, solution[row][col],
-                                            msg=f"Number {cell} at position ({row}, {col}) in the puzzle is not equal to the number {solution[row][col]} in the solution")
+                                             msg=f"Number {cell} at position ({row}, {col}) in the puzzle is not equal to the number {solution[row][col]} in the solution")
 
                 self.assertEqual(num_remaining_hints, hints)
 
             end_time = time.time()  # Stop the timer
             print(f"test_remove_numbers ({hints} hints): {end_time - start_time:.2f} seconds")
-                
+
     def test_is_valid_methods(self):
         start_time = time.time()  # Start the timer
 
@@ -126,6 +126,7 @@ class TestSudokuGenerator(unittest.TestCase):
 
         end_time = time.time()  # Stop the timer
         print(f"test_is_valid_methods: {end_time - start_time:.2f} seconds")
+
 
 if __name__ == '__main__':
     unittest.main()
