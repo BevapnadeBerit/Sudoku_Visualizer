@@ -137,21 +137,21 @@ while running:
                             pygame.K_8,
                             pygame.K_9,
                         ]:
-                            game.sudoku.manually_insert_number(select, value_of_number_key(event.key))
                             select.set_background(select_color)
+                            game.sudoku.manually_insert_number(select, value_of_number_key(event.key))
                             select = None
                             select_value = None
 
                         else:
-                            game.sudoku.manually_insert_number(select, select_value)
                             select.set_background(select_color)
+                            game.sudoku.manually_insert_number(select, select_value)
                             select = None
                             select_value = None
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if select:
-                        game.sudoku.manually_insert_number(select, select_value)
                         select.set_background(select_color)
+                        game.sudoku.manually_insert_number(select, select_value)
                         select = None
                         select_value = None
 
