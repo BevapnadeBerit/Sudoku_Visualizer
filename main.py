@@ -82,7 +82,7 @@ while running:
         elif event.type == GAME:
             menu = None
             settings = None
-            game = Game(SCREENSIZE)
+            game = Game(SCREENSIZE, screen)
             STATE = "GAME"
             continue
 

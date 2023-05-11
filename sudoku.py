@@ -1,22 +1,38 @@
 from grid import Grid, Square, Box
 from sudoku_generator import SudokuGenerator
+import pygame
+from helper_utils import *
 
 
 class Sudoku:
     """
     A representation of a Sudoku game.
     """
-    def __init__(self, grid: Grid, grid_pos: tuple[int, int]):
+    def __init__(self, grid: Grid, grid_pos: tuple[int, int], sprite_groups: dict[str, pygame.sprite.Group], 
+                 screen: pygame.Surface):
         """
         Initializes a Sudoku object.
 
         :param grid: The Grid object to be used in the Sudoku game.
         :param grid_pos: The position of the Grid object.
         """
+        self.sprite_groups = sprite_groups
+        self.screen = screen
         self.grid = grid
         self.grid_pos = grid_pos
         self.empty_squares = 81
         self.solved = False
+
+    def update_screen(self):
+        draw(self.screen, "white", self.sprite_groups,
+            "grid",
+            "box",
+            "background",
+            "square",
+            "number",
+            "game_ui",
+            )
+        pygame.display.flip()
 
     def puzzle_to_grid(self, matrix: list[list[int]]) -> None:
         self.reset()
@@ -53,23 +69,26 @@ class Sudoku:
             [-1, -1, 3, 4, -1, -1, -1, -1, -1],
             [-1, -1, -1, 2, -1, -1, 6, -1, -1]
         ]
-        self.matrix_to_grid(hard_sudoku)
+        self.puzzle_to_grid(hard_sudoku)
 
     def solve(self) -> bool:
-        print(self.solved)
         square = self.find_empty_square()
 
-        if square == None:
-            return True
+        if square is None:
+            self.update_square_validities()
+            solved = self.is_grid_valid()
+            print(solved)
+            self.solved = solved
+            return self.solved
 
         for num in range(1, 10):
             if self.is_number_valid(square.row, square.col, num):
-                self.auto_insert_number(square, num)
-
-                if self.solve():
-                    return True
-
-                self.auto_insert_number(square, -1)
+                if self.auto_insert_number(square, num):  # Check if the insertion was successful
+                    #self.print_grid()  # Print the current state of the grid
+                    if self.solve():
+                        return True
+                    # If the recursive call to solve failed, remove the number
+                    self.remove_number(square.row, square.col)
 
         return False
 
@@ -109,23 +128,18 @@ class Sudoku:
             return False
         if value not in range(1, 10):
             return False
-        if square.value == -1:  # Decrease the number of empty squares only if the square was empty
-            self.empty_squares -= 1
 
-        if not self.is_number_valid(square.row, square.col, value):
-            square.set_validity(False)
+        if self.is_number_valid(square.row, square.col, value):
+            if square.value == -1:  # Decrease the number of empty squares only if the square was empty
+                self.empty_squares -= 1
+
+            square.set_validity(True)
             square.set_value(value)
+            self.update_screen()
+
             return True
 
-        square.set_validity(True)
-        square.set_value(value)
-
-        if self.empty_squares == 0:  # If this was the last empty square
-            self.update_square_validities()  # Update validities to make sure the grid is valid
-            if self.is_grid_valid():
-                self.solved = True  # Set the win condition to True
-
-        return True
+        return False
     
     def remove_number(self, row: int, col: int):
         """
@@ -146,12 +160,16 @@ class Sudoku:
         for row in range(9):
             for col in range(9):
                 self.remove_number(row, col)
+        self.update_square_validities()
+        solved = self.is_grid_valid()
+        self.solved = solved
 
     def reset(self):
         for row in range(9):
             for col in range(9):
                 square = self._get_square(row, col)
                 square.reset()
+        self.solved = False
 
     def is_number_valid(self, row: int, col: int, num: int) -> bool:
         """
