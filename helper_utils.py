@@ -9,19 +9,24 @@ FPS = 60
 
 # custom events main
 FULLSCREEN = pygame.USEREVENT + 1
-MENU = pygame.USEREVENT + 2
-SETTINGS = pygame.USEREVENT + 3
-GAME = pygame.USEREVENT + 4
-MANUAL = pygame.USEREVENT + 5
-AUTO = pygame.USEREVENT + 6
-GENERATE = pygame.USEREVENT + 7
-SOLVE = pygame.USEREVENT + 8
-CLEAR = pygame.USEREVENT + 9
-RESET = pygame.USEREVENT + 10
-EASY = pygame.USEREVENT + 11
-MEDIUM = pygame.USEREVENT + 12
-HARD = pygame.USEREVENT + 13
+MANUAL = pygame.USEREVENT + 2
+AUTO = pygame.USEREVENT + 3
 
+MENU = pygame.USEREVENT + 11
+SETTINGS = pygame.USEREVENT + 12
+GAME = pygame.USEREVENT + 13
+DEMO = pygame.USEREVENT + 14
+
+GENERATE = pygame.USEREVENT + 21
+SOLVE = pygame.USEREVENT + 22
+CLEAR = pygame.USEREVENT + 23
+RESET = pygame.USEREVENT + 24
+
+EASY = pygame.USEREVENT + 31
+MEDIUM = pygame.USEREVENT + 32
+HARD = pygame.USEREVENT + 33
+
+# standardized sizes
 TITLE_SIZE = (598, 223)
 BIG_BUTTON_SIZE = (300, 100)
 SMALL_BUTTON_SIZE = (150, 75)

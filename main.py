@@ -85,6 +85,11 @@ while running:
             game = Game(SCREENSIZE)
             STATE = "GAME"
             continue
+        elif event.type == DEMO:
+            menu = None
+            settings = None
+            # game = Demo(SCREENSIZE)
+            STATE = "GAME"
 
         elif event.type == MANUAL:
             AUTOMODE = False
