@@ -5,11 +5,13 @@ from helper_utils import *
 
 SQUARE_TOTAL = 81
 
+
 class Sudoku:
     """
     A representation of a Sudoku game.
     """
-    def __init__(self, grid: Grid, grid_pos: tuple[int, int], sprite_groups: dict[str, pygame.sprite.Group], 
+
+    def __init__(self, grid: Grid, grid_pos: tuple[int, int], sprite_groups: dict[str, pygame.sprite.Group],
                  screen: pygame.Surface):
         """
         Initializes a Sudoku object.
@@ -26,13 +28,13 @@ class Sudoku:
 
     def update_screen(self):
         draw(self.screen, "white", self.sprite_groups,
-            "grid",
-            "box",
-            "background",
-            "square",
-            "number",
-            "game_ui",
-            )
+             "grid",
+             "box",
+             "background",
+             "square",
+             "number",
+             "game_ui",
+             )
         pygame.display.flip()
 
     def puzzle_to_grid(self, matrix: list[list[int]]) -> None:
@@ -74,7 +76,7 @@ class Sudoku:
         self.empty_squares = SQUARE_TOTAL - hints
 
     def demo(self) -> None:
-        hard_sudoku = [    
+        hard_sudoku = [
             [5, 3, -1, -1, 7, -1, -1, -1, -1],
             [6, -1, -1, 1, 9, 5, -1, -1, -1],
             [-1, 9, 8, -1, -1, -1, -1, 6, -1],
@@ -117,7 +119,7 @@ class Sudoku:
                             # If the recursive call fails, remove the number from the square and the grid
                             self.grid_matrix[row][col] = -1
                             self._get_square(row, col).reset()
-                            #self.update_screen()
+                            # self.update_screen()
 
                     return False  # If no number can be inserted in the current square, backtrack
 
@@ -159,7 +161,7 @@ class Sudoku:
         """
         square = self._get_square(row, col)
         return square.value
-    
+
     def manually_insert_number(self, square: Square, value: int, hint: bool = False):
         if square.static:
             return False
@@ -187,8 +189,8 @@ class Sudoku:
         """
         if square.static:
             return False
-        #if value not in range(1, 10):
-           # return False
+        # if value not in range(1, 10):
+        # return False
 
         """if force or self.is_number_valid(square.row, square.col, value):
             if square.value == -1:  # Decrease the number of empty squares only if the square was empty
@@ -200,9 +202,9 @@ class Sudoku:
             square.set_validity(False)
             square.set_value(value)"""
         square.set_value(value)
-        #self.update_screen()
+        # self.update_screen()
         return True
-    
+
     def remove_number(self, row: int, col: int):
         """
         Removes a number from a specified row and column of the Sudoku grid.
@@ -248,11 +250,11 @@ class Sudoku:
             return False
         if self._value_in_col(col, num, exclude_row=row):
             return False
-            
+
         # Check if the number is already in the same box
         box = self._get_box(self._get_square(row, col))
         return not self._value_in_box(box, num, exclude_row=row, exclude_col=col)
-    
+
     def find_empty_square(self) -> Square | None:
         """
         Finds the next empty square in the Sudoku grid.
@@ -263,7 +265,7 @@ class Sudoku:
                 if self.get_number(row, col) == -1:
                     return self._get_square(row, col)
         return None
-    
+
     def is_grid_valid(self) -> bool:
         """
         Checks the whole grid and returns True if all Squares are valid, False otherwise.
@@ -290,7 +292,7 @@ class Sudoku:
                 if value != -1:
                     validity = self.is_number_valid(row, col, value)
                     self._get_square(row, col).set_validity(validity)
-    
+
     def _get_square(self, row: int, col: int) -> Square:
         """
         Returns the Square object at a specified row and column of the Sudoku grid.
@@ -311,7 +313,7 @@ class Sudoku:
         box_row = square.row // 3
         box_col = square.col // 3
         return self.grid.boxes[box_row][box_col]
-    
+
     def _value_in_row(self, row: int, num: int, exclude_col: int = None) -> bool:
         """
         Checks if a number is already in the same row.
@@ -325,7 +327,6 @@ class Sudoku:
             if i != exclude_col and self.get_number(row, i) == num:
                 return True
         return False
-
 
     def _value_in_col(self, col: int, num: int, exclude_row: int = None) -> bool:
         """

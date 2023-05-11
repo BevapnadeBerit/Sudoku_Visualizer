@@ -1,6 +1,7 @@
 import random
 import time
 
+
 class SudokuGenerator:
 
     def __init__(self):
@@ -15,7 +16,7 @@ class SudokuGenerator:
             self.__generate_random_diagonal()
             self.solution = [row.copy() for row in self.grid]
             success = self.__remove_numbers(hints, start_time, timeout)
-        
+
         total_end_time = time.time()
         if not success:
             print(f"Failed to generate a puzzle. Time taken {total_end_time - total_start_time:.2f} seconds")
@@ -39,7 +40,7 @@ class SudokuGenerator:
                 grid[row][col] = -1
 
         return False
-    
+
     def __random_solve(self, grid: list[list[int]]) -> bool:
         row, col = self.__find_empty(grid)
 
@@ -58,7 +59,7 @@ class SudokuGenerator:
                 grid[row][col] = -1
 
         return False
-    
+
     def __is_valid_grid(self, grid: list[list[int]]) -> bool:
         for row in range(9):
             for col in range(9):
@@ -70,8 +71,8 @@ class SudokuGenerator:
                         return False
                     grid[row][col] = num
         return True
-    
-    def __generate_random_diagonal(self) -> bool: #Completely new puzzle, with three boxes filled in on the diagonal
+
+    def __generate_random_diagonal(self) -> bool:  # Completely new puzzle, with three boxes filled in on the diagonal
         self.__resetGrid()
 
         num_range = list(range(1, 10))
@@ -112,7 +113,7 @@ class SudokuGenerator:
                 self.grid[row][col] = -1
 
         return False
-    
+
     def __remove_numbers(self, hints: int, start_time: float, timeout: int) -> bool:
         remaining_positions = {(row, col) for row in range(9) for col in range(9)}
         original_grid = [row.copy() for row in self.grid]
@@ -121,7 +122,7 @@ class SudokuGenerator:
         while len(remaining_positions) > hints:
             if time.time() - start_time >= timeout:
                 return False
-            
+
             position = random.choice(list(remaining_positions))
             row, col = position
             temp_val = self.grid[row][col]
@@ -199,7 +200,7 @@ class SudokuGenerator:
 
     def __format_cell(self, value: int) -> str:
         return str(value) if value != -1 else ' '
-    
+
     def __grid_to_str(self, grid: list[list[int]]) -> str:
         grid_str = []
         for row in range(9):
@@ -232,10 +233,11 @@ class SudokuGenerator:
     def print_puzzle(self) -> None:
         print("Puzzle:")
         self.__print_grid(self.grid)
-        
+
     def print_solution(self) -> None:
         print("Solution:")
         self.__print_grid(self.solution)
+
 
 if __name__ == '__main__':
     generator = SudokuGenerator()
