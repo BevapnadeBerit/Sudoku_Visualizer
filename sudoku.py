@@ -82,6 +82,13 @@ class Sudoku:
             return self.solved
 
         for num in range(1, 10):
+            # Insert the number in the square and update the screen
+            square.set_value(num)
+            self.update_screen()
+            
+            # Delay for a while
+            #pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
+
             if self.is_number_valid(square.row, square.col, num):
                 if self.auto_insert_number(square, num):  # Check if the insertion was successful
                     #self.print_grid()  # Print the current state of the grid
@@ -89,6 +96,11 @@ class Sudoku:
                         return True
                     # If the recursive call to solve failed, remove the number
                     self.remove_number(square.row, square.col)
+                    self.update_screen()
+
+        # If no valid number was found, set the square value back to -1
+        square.set_value(-1)
+        self.update_screen()
 
         return False
 
