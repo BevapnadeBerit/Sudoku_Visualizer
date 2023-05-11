@@ -1,4 +1,5 @@
 from grid import Grid, Square, Box
+from sudoku_generator import SudokuGenerator
 
 
 class Sudoku:
@@ -17,6 +18,61 @@ class Sudoku:
         self.empty_squares = 81
         self.solved = False
 
+    def puzzle_to_grid(self, matrix: list[list[int]]) -> None:
+        self.reset()
+        for row_idx, row in enumerate(matrix):
+            for col_idx, value in enumerate(row):
+                if value != -1:
+                    square = self._get_square(row_idx, col_idx)
+                    square.set_value(value)
+                    square.set_static(True)
+
+
+    def generate_puzzle(self, difficulty: str) -> None:
+        if difficulty == "EASY":
+            hints = 45
+        elif difficulty == "MEDIUM":
+            hints = 35
+        elif difficulty == "HARD":
+            hints = 29
+        else:
+            raise ValueError("Invalid difficulty level!")
+        generator = SudokuGenerator()
+        puzzle = generator.generate_puzzle(hints)[0]
+        self.puzzle_to_grid(puzzle)
+
+    def demo(self) -> None:
+        hard_sudoku = [
+            [-1, -1, -1, 8, -1, 1, -1, -1, -1],
+            [-1, -1, -1, -1, -1, -1, -1, 4, 3],
+            [5, -1, -1, -1, -1, -1, -1, -1, -1],
+            [-1, -1, -1, -1, 7, -1, 8, -1, -1],
+            [-1, -1, -1, -1, -1, -1, 1, -1, -1],
+            [-1, 2, -1, -1, 3, -1, -1, -1, -1],
+            [6, -1, -1, -1, -1, -1, -1, 7, 5],
+            [-1, -1, 3, 4, -1, -1, -1, -1, -1],
+            [-1, -1, -1, 2, -1, -1, 6, -1, -1]
+        ]
+        self.matrix_to_grid(hard_sudoku)
+
+    def solve(self) -> bool:
+        print(self.solved)
+        square = self.find_empty_square()
+
+        if square == None:
+            return True
+
+        for num in range(1, 10):
+            if self.is_number_valid(square.row, square.col, num):
+                self.auto_insert_number(square, num)
+
+                if self.solve():
+                    return True
+
+                self.auto_insert_number(square, -1)
+
+        return False
+
     def get_number(self, row: int, col: int) -> int:
         """
         Gets the number at the specified row and column of the Sudoku grid.
@@ -27,8 +83,20 @@ class Sudoku:
         """
         square = self._get_square(row, col)
         return square.value
+    
+    def manually_insert_number(self, square: Square, value: int, hint: bool = False):
+        if square.static:
+            return False
+        
+        square.set_value(value)
+        if self.empty_squares == 0:  # If this was the last empty square
+            self.update_square_validities()  # Update validities to make sure the grid is valid
+            if self.is_grid_valid():
+                self.solved = True  # Set the win condition to True
 
-    def insert_number(self, row: int, col: int, value: int):
+        return True
+
+    def auto_insert_number(self, square: Square, value: int):
         """
         Inserts a number in a specified row and column of the Sudoku grid.
 
@@ -37,13 +105,14 @@ class Sudoku:
         :param value: The value of the number to be inserted.
         :return: True if the number was successfully inserted, False otherwise.
         """
+        if square.static:
+            return False
         if value not in range(1, 10):
             return False
-        square = self._get_square(row, col)
         if square.value == -1:  # Decrease the number of empty squares only if the square was empty
             self.empty_squares -= 1
 
-        if not self.is_number_valid(row, col, value):
+        if not self.is_number_valid(square.row, square.col, value):
             square.set_validity(False)
             square.set_value(value)
             return True
@@ -61,20 +130,28 @@ class Sudoku:
     def remove_number(self, row: int, col: int):
         """
         Removes a number from a specified row and column of the Sudoku grid.
+        Skips hints.
 
         :param row: The row from which the number should be removed.
         :param col: The column from which the number should be removed.
         """
         square = self._get_square(row, col)
-        square.reset()
+        if not square.static:
+            square.reset()
 
-    def reset(self):
+    def clear(self):
         """
-        Removes all the values from Squares in the grid.
+        Removes all the values from Squares in the grid, except hints.
         """
         for row in range(9):
             for col in range(9):
                 self.remove_number(row, col)
+
+    def reset(self):
+        for row in range(9):
+            for col in range(9):
+                square = self._get_square(row, col)
+                square.reset()
 
     def is_number_valid(self, row: int, col: int, num: int) -> bool:
         """
