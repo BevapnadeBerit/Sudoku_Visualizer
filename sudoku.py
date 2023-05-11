@@ -43,6 +43,20 @@ class Sudoku:
                     square.set_value(value)
                     square.set_static(True)
 
+    def grid_to_list(self) -> list[list[int]]:
+        """
+        Converts the Sudoku grid into a list of lists representation.
+
+        :return: The grid represented as a list of lists.
+        """
+        grid_list = []
+        for row in range(9):
+            row_list = []
+            for col in range(9):
+                value = self.get_number(row, col)
+                row_list.append(value)
+            grid_list.append(row_list)
+        return grid_list
 
     def generate_puzzle(self, difficulty: str) -> None:
         if difficulty == "EASY":
@@ -72,32 +86,65 @@ class Sudoku:
         self.puzzle_to_grid(hard_sudoku)
 
     def solve(self) -> bool:
-        square = self.find_empty_square()
+        """
+        Solves the Sudoku using backtracking.
+        """
+        self.grid_matrix = self.grid_to_list()  # Translate the grid to a matrix
+        return self._solve_matrix()
 
-        if square is None:
-            self.update_square_validities()
-            solved = self.is_grid_valid()
-            print(solved)
-            self.solved = solved
-            return self.solved
+    def _solve_matrix(self) -> bool:
+        """
+        Solves the Sudoku grid matrix using backtracking.
 
-        for num in range(1, 10):
-            # Insert the number in the square and update the screen
-            self.auto_insert_number(square, num, force=True)  # force insertion even if invalid
-            self.update_screen()
-            
-            # Delay for a while
-            #pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
+        :return: True if the Sudoku grid matrix can be solved, False otherwise.
+        """
+        for row in range(9):
+            for col in range(9):
+                if self.grid_matrix[row][col] == -1:  # Check if the square is empty
+                    for num in range(1, 10):  # Try numbers from 1 to 9
+                        if self._is_number_valid_matrix(row, col, num):  # Check if the number is valid
+                            # Assign the number to the square and insert it in the grid
+                            self.grid_matrix[row][col] = num
+                            self._get_square(row, col).set_value(num)
+                            self.update_screen()
 
-            if self.is_number_valid(square.row, square.col, num):
-                if self.solve():
-                    return True
+                            if self._solve_matrix():  # Recursively try to solve the rest of the grid
+                                return True
 
-            # If the number is invalid or the recursive call to solve failed, remove the number
-            self.remove_number(square.row, square.col)
-            #self.update_screen()
+                            # If the recursive call fails, remove the number from the square and the grid
+                            self.grid_matrix[row][col] = -1
+                            self._get_square(row, col).reset()
+                            self.update_screen()
 
-        return False
+                    return False  # If no number can be inserted in the current square, backtrack
+
+        # If all the squares are filled, the Sudoku is solved
+        self.update_square_validities()
+        self.solved = self.is_grid_valid()
+        return self.solved
+
+    def _is_number_valid_matrix(self, row: int, col: int, num: int) -> bool:
+        """
+        Checks if a number is valid to be inserted in a specified row and  
+        column of the Sudoku grid matrix according to the rules of Sudoku.
+
+        :param row: The row to check.
+        :param col: The column to check.
+        :param num: The number to check.
+        :return: True if the number is valid, False otherwise.
+        """
+        # Check if the number is already in the same row or column
+        if num in self.grid_matrix[row] or num in (self.grid_matrix[i][col] for i in range(9)):
+            return False
+
+        # Check if the number is already in the same 3x3 box
+        box_start_row, box_start_col = 3 * (row // 3), 3 * (col // 3)
+        for i in range(3):
+            for j in range(3):
+                if self.grid_matrix[i + box_start_row][j + box_start_col] == num:
+                    return False
+
+        return True
 
     def get_number(self, row: int, col: int) -> int:
         """
