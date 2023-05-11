@@ -87,7 +87,7 @@ class Sudoku:
             self.update_screen()
             
             # Delay for a while
-            pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
+            #pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
 
             if self.is_number_valid(square.row, square.col, num):
                 if self.solve():
@@ -136,7 +136,7 @@ class Sudoku:
         if value not in range(1, 10):
             return False
 
-        if force or self.is_number_valid(square.row, square.col, value):
+        """if force or self.is_number_valid(square.row, square.col, value):
             if square.value == -1:  # Decrease the number of empty squares only if the square was empty
                 self.empty_squares -= 1
 
@@ -144,9 +144,9 @@ class Sudoku:
             square.set_value(value)
         else:
             square.set_validity(False)
-            square.set_value(value)
-
-        self.update_screen()
+            square.set_value(value)"""
+        square.set_value(value)
+        #self.update_screen()
         return True
     
     def remove_number(self, row: int, col: int):
