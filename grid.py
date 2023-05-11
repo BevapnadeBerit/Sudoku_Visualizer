@@ -106,7 +106,7 @@ class Square(pygame.sprite.Sprite):
         super().__init__(sprite_groups["square"])
 
         self.number_sprites = sprite_groups["number"]
-        self.background_sprites = sprite_groups["square_background"]
+        self.background_sprites = sprite_groups["background"]
 
         file_path = os.path.join("images", "square.png")
         image = pygame.image.load(file_path).convert_alpha()

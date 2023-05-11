@@ -14,6 +14,13 @@ SETTINGS = pygame.USEREVENT + 3
 GAME = pygame.USEREVENT + 4
 MANUAL = pygame.USEREVENT + 5
 AUTO = pygame.USEREVENT + 6
+GENERATE = pygame.USEREVENT + 7
+SOLVE = pygame.USEREVENT + 8
+CLEAR = pygame.USEREVENT + 9
+RESET = pygame.USEREVENT + 10
+EASY = pygame.USEREVENT + 11
+MEDIUM = pygame.USEREVENT + 12
+HARD = pygame.USEREVENT + 13
 
 TITLE_SIZE = (598, 223)
 BIG_BUTTON_SIZE = (300, 100)
@@ -87,3 +94,13 @@ class Image(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = pos
 
+
+class Rectangle(pygame.sprite.Sprite):
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], color: tuple[int, int, int],
+                 group: pygame.sprite.Group):
+        super().__init__(group)
+
+        self.image = pygame.Surface(size, pygame.SRCALPHA)
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
