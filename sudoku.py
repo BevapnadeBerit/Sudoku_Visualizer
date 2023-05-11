@@ -3,6 +3,7 @@ from sudoku_generator import SudokuGenerator
 import pygame
 from helper_utils import *
 
+SQUARE_TOTAL = 81
 
 class Sudoku:
     """
@@ -20,7 +21,7 @@ class Sudoku:
         self.screen = screen
         self.grid = grid
         self.grid_pos = grid_pos
-        self.empty_squares = 81
+        self.empty_squares = SQUARE_TOTAL
         self.solved = False
 
     def update_screen(self):
@@ -56,6 +57,7 @@ class Sudoku:
         generator = SudokuGenerator()
         puzzle = generator.generate_puzzle(hints)[0]
         self.puzzle_to_grid(puzzle)
+        self.empty_squares = SQUARE_TOTAL - hints
 
     def demo(self) -> None:
         hard_sudoku = [
@@ -113,7 +115,11 @@ class Sudoku:
     def manually_insert_number(self, square: Square, value: int, hint: bool = False):
         if square.static:
             return False
-        
+
+        if square.value == -1:
+            self.empty_squares -= 1
+        if value == -1:
+            self.empty_squares += 1
         square.set_value(value)
         if self.empty_squares == 0:  # If this was the last empty square
             self.update_square_validities()  # Update validities to make sure the grid is valid
