@@ -72,18 +72,18 @@ class Sudoku:
         self.puzzle_to_grid(puzzle)
 
     def demo(self) -> None:
-        hard_sudoku = [
-            [-1, -1, -1, 8, -1, 1, -1, -1, -1],
-            [-1, -1, -1, -1, -1, -1, -1, 4, 3],
-            [5, -1, -1, -1, -1, -1, -1, -1, -1],
-            [-1, -1, -1, -1, 7, -1, 8, -1, -1],
-            [-1, -1, -1, -1, -1, -1, 1, -1, -1],
-            [-1, 2, -1, -1, 3, -1, -1, -1, -1],
-            [6, -1, -1, -1, -1, -1, -1, 7, 5],
-            [-1, -1, 3, 4, -1, -1, -1, -1, -1],
-            [-1, -1, -1, 2, -1, -1, 6, -1, -1]
-        ]
+        hard_sudoku = [    [5, 3, -1, -1, 7, -1, -1, -1, -1],
+    [6, -1, -1, 1, 9, 5, -1, -1, -1],
+    [-1, 9, 8, -1, -1, -1, -1, 6, -1],
+    [8, -1, -1, -1, 6, -1, -1, -1, 3],
+    [4, -1, -1, 8, -1, 3, -1, -1, 1],
+    [7, -1, -1, -1, 2, -1, -1, -1, 6],
+    [-1, 6, -1, -1, -1, -1, 2, 8, -1],
+    [-1, -1, -1, 4, 1, 9, -1, -1, 5],
+    [-1, -1, -1, -1, 8, -1, -1, 7, 9]
+]
         self.puzzle_to_grid(hard_sudoku)
+        self.solve()
 
     def solve(self) -> bool:
         """
@@ -114,7 +114,7 @@ class Sudoku:
                             # If the recursive call fails, remove the number from the square and the grid
                             self.grid_matrix[row][col] = -1
                             self._get_square(row, col).reset()
-                            self.update_screen()
+                            #self.update_screen()
 
                     return False  # If no number can be inserted in the current square, backtrack
 
