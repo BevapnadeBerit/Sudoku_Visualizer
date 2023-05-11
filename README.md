@@ -38,14 +38,17 @@ The menu room is the gateway of the application, leading the user to where it wa
 <img src=./images/screenshot_menu.png width="400"><br><br>
 The menu currently contains:
 <ul style="list-style-type: disc; padding-left: 1em;">
-  <li style="margin-bottom: 0;">The Play button leads to the game room where the user may play sudoku and use the Sudoku Visualization Algorithm to solve what is left of the puzzle.</li>
-  <li style="margin-bottom: 0;">The Demo button also leads to the game room, but with a preset puzzle which is used to present the Sudoku Visualization Algorithm.</li>
+  <li style="margin-bottom: 0;">The Play button leads to the game room where the user may play sudoku and use the Sudoku Solving Algorithm to solve what is left of the puzzle.</li>
+  <li style="margin-bottom: 0;">The Demo button also leads to the game room, but with a preset puzzle which is used to present the Sudoku Solving Algorithm.</li>
   <li style="margin-bottom: 0;">The Settings button leads to the settings room.</li>
 </ul>
 
 ### Game
 In the game room one gets directly to the sudoku board with difficulty options to the left and functional buttons to the right.<br><br>
-<img src=./images/screenshot_game_empty.png width="400"><br><br>
+<img src=./images/screenshot_game_empty.png width="400"><br>
+<img src=./images/screenshot_game_hard_empty.png width="400"><br>
+<img src=./images/screenshot_game_hard_solved.png width="400"><br>
+<img src=./images/screenshot_game_manual_solved.png width="400"><br><br>
 The difficulty options are represented as radio buttons, and each difficulty represents a given amount of hints.
 <ul style="list-style-type: disc; padding-left: 1em;">
   <li style="margin-bottom: 0;">Easy → 45</li>
@@ -56,14 +59,11 @@ The difficulty options are represented as radio buttons, and each difficulty rep
 And on the right side there are functional buttons:
 <ul style="list-style-type: disc; padding-left: 1em;">
   <li style="margin-bottom: 0;">Generate: makes a new randomized puzzle with hints according to the current difficulty.</li>
-  <li style="margin-bottom: 0;">Solve: starts the Sudoku Visualization Algorithm from given point in the puzzle.</li>
+  <li style="margin-bottom: 0;">Solve: starts the Sudoku Solving Algorithm from given point in the puzzle.</li>
   <li style="margin-bottom: 0;">Clear: removes all non-generated values from the board.</li>
   <li style="margin-bottom: 0;">Reset: removes all values from the board.</li>
+  <li style="margin-bottom: 0;">Demo: runs the Sudoku Solving Algorithm on a preset puzzle.</li>
 </ul>
-
-
-### Demo
-_Coming soon..._
 
 ### Settings
 Settings room is the place for adjusting variables to either fit the specific computer environment, or further the user experience.<br><br>
