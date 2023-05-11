@@ -83,24 +83,19 @@ class Sudoku:
 
         for num in range(1, 10):
             # Insert the number in the square and update the screen
-            square.set_value(num)
+            self.auto_insert_number(square, num, force=True)  # force insertion even if invalid
             self.update_screen()
             
             # Delay for a while
-            #pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
+            pygame.time.delay(50)  # 200 milliseconds = 0.2 seconds
 
             if self.is_number_valid(square.row, square.col, num):
-                if self.auto_insert_number(square, num):  # Check if the insertion was successful
-                    #self.print_grid()  # Print the current state of the grid
-                    if self.solve():
-                        return True
-                    # If the recursive call to solve failed, remove the number
-                    self.remove_number(square.row, square.col)
-                    self.update_screen()
+                if self.solve():
+                    return True
 
-        # If no valid number was found, set the square value back to -1
-        square.set_value(-1)
-        self.update_screen()
+            # If the number is invalid or the recursive call to solve failed, remove the number
+            self.remove_number(square.row, square.col)
+            self.update_screen()
 
         return False
 
@@ -127,13 +122,13 @@ class Sudoku:
 
         return True
 
-    def auto_insert_number(self, square: Square, value: int):
+    def auto_insert_number(self, square: Square, value: int, force: bool = False):
         """
-        Inserts a number in a specified row and column of the Sudoku grid.
+        Inserts a number in a specified square of the Sudoku grid.
 
-        :param row: The row in which the number should be inserted.
-        :param col: The column in which the number should be inserted.
+        :param square: The square in which the number should be inserted.
         :param value: The value of the number to be inserted.
+        :param force: If True, the number will be inserted even if it's not valid.
         :return: True if the number was successfully inserted, False otherwise.
         """
         if square.static:
@@ -141,17 +136,18 @@ class Sudoku:
         if value not in range(1, 10):
             return False
 
-        if self.is_number_valid(square.row, square.col, value):
+        if force or self.is_number_valid(square.row, square.col, value):
             if square.value == -1:  # Decrease the number of empty squares only if the square was empty
                 self.empty_squares -= 1
 
             square.set_validity(True)
             square.set_value(value)
-            self.update_screen()
+        else:
+            square.set_validity(False)
+            square.set_value(value)
 
-            return True
-
-        return False
+        self.update_screen()
+        return True
     
     def remove_number(self, row: int, col: int):
         """
