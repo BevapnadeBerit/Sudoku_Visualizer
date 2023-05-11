@@ -29,6 +29,7 @@ def button_collision(room: Menu | Settings | Game, group_key: str):
 
 # States
 STATE = "MENU"
+DIFFICULTY = "EASY"
 AUTOMODE = False
 
 # settings
@@ -86,6 +87,22 @@ while running:
             AUTOMODE = False
         elif event.type == AUTO:
             AUTOMODE = True
+
+        elif event.type == GENERATE:
+            print("GENERATE")
+        elif event.type == SOLVE:
+            print("SOLVE")
+        elif event.type == CLEAR:
+            print("CLEAR")
+        elif event.type == RESET:
+            print("RESET")
+
+        elif event.type == EASY:
+            DIFFICULTY = "EASY"
+        elif event.type == MEDIUM:
+            DIFFICULTY = "MEDIUM"
+        elif event.type == HARD:
+            DIFFICULTY = "HARD"
 
         if STATE == "MENU":
             if event.type == pygame.MOUSEBUTTONDOWN:
