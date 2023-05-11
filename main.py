@@ -98,12 +98,16 @@ while running:
 
         elif event.type == GENERATE:
             print("GENERATE")
+            game.sudoku.generate_puzzle(DIFFICULTY)
         elif event.type == SOLVE:
             print("SOLVE")
+            game.sudoku.solve()
         elif event.type == CLEAR:
             print("CLEAR")
+            game.sudoku.clear()
         elif event.type == RESET:
             print("RESET")
+            game.sudoku.reset()
 
         elif event.type == EASY:
             DIFFICULTY = "EASY"
